@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require "agent/hostname"
+require "logger"
 
 module OasAgent
   module Agent
