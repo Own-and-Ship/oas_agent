@@ -19,7 +19,11 @@ module OasAgent
         configure_agent(env, options)
         env_name = options.delete(:env) and self.env = env_name
 
-        OasAgent::AgentContext.logger.info("Starting the Own & Ship agent in the #{env} environment for application #{OasAgent::AgentContext.config[:app_name]}")
+        if OasAgent::AgentContext.config[:enabled]
+          OasAgent::AgentContext.logger.info("Starting the Own & Ship agent in the #{env} environment for application #{OasAgent::AgentContext.config[:app_name]}")
+        else
+          OasAgent::AgentContext.logger.info("The Own & Ship agent in the #{env} environment for application #{OasAgent::AgentContext.config[:app_name]} will be disabled")
+        end
 
         start_agent
         insert_deprecation_behaviour
