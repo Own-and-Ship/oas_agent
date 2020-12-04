@@ -15,6 +15,7 @@ module OasAgent
         @report_queue = SizedQueue.new(OasAgent::AgentContext.config[:reporter][:max_reports_to_queue])
         @reporter_thread = create_reporter_thread unless OasAgent::AgentContext.config[:reporter][:send_immediately]
         @rails_env = Rails.env
+        @rails_version = Rails::VERSION::STRING
         @rails_root = Rails.root.expand_path.to_s
       end
 
@@ -47,6 +48,7 @@ module OasAgent
         # exception every @batched_report_timeout seconds when there are no
         # reports to send
         @batched_reports_to_send = [@report_queue.pop]
+
         # We only activate the timeout after the first report is received, there
         # is no point setting a delivery timeout on nothing
         Timeout::timeout(OasAgent::AgentContext.config[:reporter][:batched_report_timeout]) do
@@ -81,6 +83,8 @@ module OasAgent
 
         @connection.send_request(
           {
+            software_type: "rails",
+            software_version: @rails_version,
             rails_env: @rails_env,
             rails_root: @rails_root,
             reports: processed_reports

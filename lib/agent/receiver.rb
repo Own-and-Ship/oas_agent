@@ -18,6 +18,7 @@ module OasAgent
         location ||= callstack.first
 
         message = {
+          type: "rails",
           message: message.sub(/\ADEPRECATION WARNING: /, "").sub(/\(called from.+\)/, "").strip,
           location: {
             path: location.absolute_path,
