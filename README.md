@@ -1,8 +1,6 @@
 # OasAgent
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/oas_ruby_agent`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+This is the Ruby agent library for the Own & Ship service, for more information see [ownandship.io](https://ownandship.io).
 
 ## Installation
 
@@ -18,21 +16,9 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install oas_ruby_agent
+    $ gem install oas_agent
 
 ## Usage
-
-### Development server
-
-In development an endpoint is automatically added to your application at `/oas`. When visited this shows you a list of deprecations that have occurred since the development server was started. If the mount point conflicts with any of your routes you can change it in your application's development config.
-
-```ruby
-YourApp::Application.configure do
-  config.oas_dev_engine.mounted_path = "some_new_path"
-end
-```
-
-By default the route is only added in development mode.
 
 ### Advanced config options:
 
