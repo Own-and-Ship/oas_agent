@@ -55,7 +55,7 @@ module OasAgent
       end
 
       def yaml_config_file_path
-        File.join(self.root, "config", "oas.yml")
+        File.join(self.root, "config", "own_and_ship.yml")
       end
 
       def api_host

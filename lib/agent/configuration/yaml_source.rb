@@ -39,7 +39,7 @@ module OasAgent
             file.gsub!(/^\s*#.*$/, '#')
             ERB.new(file).result(binding)
           rescue ScriptError, StandardError => e
-            OasAgent::AgentContext.logger.error("Failed ERB processing configuration file. This is typically caused by a Ruby error in <% %> templating blocks in your oas.yml file.", e)
+            OasAgent::AgentContext.logger.error("Failed ERB processing configuration file. This is typically caused by a Ruby error in <% %> templating blocks in your own_and_ship.yml file.", e)
             nil
           end
         end
