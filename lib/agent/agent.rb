@@ -4,6 +4,7 @@
 require "singleton"
 require "agent/reporter"
 require "agent/receiver"
+require "agent/ruby_receiver"
 
 module OasAgent
   module Agent
@@ -17,7 +18,7 @@ module OasAgent
     class Base
       include Singleton
 
-      attr_reader :receiver
+      attr_reader :receiver, :ruby_receiver
 
       class << self
         def instance
@@ -36,6 +37,7 @@ module OasAgent
       def start
         @reporter = Reporter.instance
         @receiver = Receiver.new(reporter: @reporter)
+        @ruby_receiver = RubyReceiver.new(reporter: @reporter)
       end
     end
   end

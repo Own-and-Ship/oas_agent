@@ -2,29 +2,30 @@
 # frozen_string_literal: true
 
 require "agent/configuration/manager"
+require "singleton"
 
 module OasAgent
   module Agent
-    class Receiver
+    class RubyReceiver
       def initialize(reporter:)
         @reporter = reporter
         @rails_root = Rails.root.expand_path.to_s
-        @rails_version = Rails::VERSION::STRING
       end
 
-      def call(message, callstack, *args)
+      def push(message, callstack)
         return unless config[:enabled]
 
-        location = callstack.detect{ |location| location.absolute_path&.starts_with? @rails_root }
-        location ||= callstack.first
+        parsed_locations = callstack.map{|c| c.split(":")[0..1] }
+        location = parsed_locations.detect{ |location, _| location.starts_with? @rails_root }
+        location ||= parsed_locations.first
 
         message = {
-          type: "rails",
-          version: @rails_version,
-          message: message.sub(/\ADEPRECATION WARNING: /, "").sub(/\(called from.+\)/, "").strip,
+          type: "ruby",
+          version: RUBY_VERSION,
+          message: message.strip,
           location: {
-            path: location.absolute_path,
-            lineno: location.lineno
+            path: location[0],
+            lineno: location[1]
           },
           callstack: callstack
         }

@@ -15,7 +15,6 @@ module OasAgent
         @report_queue = SizedQueue.new(OasAgent::AgentContext.config[:reporter][:max_reports_to_queue])
         @reporter_thread = create_reporter_thread unless OasAgent::AgentContext.config[:reporter][:send_immediately]
         @rails_env = Rails.env
-        @rails_version = Rails::VERSION::STRING
         @rails_root = Rails.root.expand_path.to_s
       end
 
@@ -46,7 +45,7 @@ module OasAgent
         # Let's block waiting for the first report to send. This way we avoid
         # looping over an empty reports to send list and throwing a timeout
         # exception every @batched_report_timeout seconds when there are no
-        # reports to send
+        # reports to send.
         @batched_reports_to_send = [@report_queue.pop]
 
         # We only activate the timeout after the first report is received, there
@@ -69,22 +68,24 @@ module OasAgent
           callstack_key = Digest::SHA256.hexdigest(element[:callstack].join(""))
 
           hash[element[:message]] ||= {}
+          hash[element[:message]][:meta] ||= {}
+          hash[element[:message]][:meta][:software_type] = element[:type]
+          hash[element[:message]][:meta][:software_version] = element[:version]
 
-          hash[element[:message]][location] ||= {count: 0, path: element[:location][:path], lineno: element[:location][:lineno]}
-          hash[element[:message]][location][:count] += 1
+          hash[element[:message]][:events] ||= {}
+          hash[element[:message]][:events][location] ||= {count: 0, path: element[:location][:path], lineno: element[:location][:lineno]}
+          hash[element[:message]][:events][location][:count] += 1
 
-          hash[element[:message]][location][:callstacks] ||= {}
-          hash[element[:message]][location][:callstacks][callstack_key] ||= {count: 0}
-          hash[element[:message]][location][:callstacks][callstack_key][:count] += 1
-          hash[element[:message]][location][:callstacks][callstack_key][:callstack] ||= element[:callstack]
+          hash[element[:message]][:events][location][:callstacks] ||= {}
+          hash[element[:message]][:events][location][:callstacks][callstack_key] ||= {count: 0}
+          hash[element[:message]][:events][location][:callstacks][callstack_key][:count] += 1
+          hash[element[:message]][:events][location][:callstacks][callstack_key][:callstack] ||= element[:callstack]
 
           hash
         end
 
         @connection.send_request(
           {
-            software_type: "rails",
-            software_version: @rails_version,
             rails_env: @rails_env,
             rails_root: @rails_root,
             reports: processed_reports

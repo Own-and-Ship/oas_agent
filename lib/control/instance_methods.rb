@@ -26,6 +26,7 @@ module OasAgent
         end
 
         start_agent
+        insert_ruby_deprecation_behaviour if OasAgent::AgentContext.config[:common][:report_ruby_deprecations] == true
         insert_deprecation_behaviour
       end
 
@@ -47,6 +48,10 @@ module OasAgent
 
       def insert_deprecation_behaviour
         ActiveSupport::Deprecation.behavior << OasAgent::AgentContext.agent.receiver
+      end
+
+      def insert_ruby_deprecation_behaviour
+        require "control/ruby_reporting"
       end
 
       def yaml_config_file_path
