@@ -65,6 +65,8 @@ module OasAgent
           @conn = Net::HTTP.new(config[:api][:host], config[:api][:port])
         end
 
+        # @conn.set_debug_output($stdout)
+
         if config[:api][:enforce_tls] == true
           @conn.use_ssl     = true
           @conn.verify_mode = OpenSSL::SSL::VERIFY_PEER
@@ -72,6 +74,8 @@ module OasAgent
 
         @conn.read_timeout       = config[:api][:read_timeout]
         @conn.keep_alive_timeout = config[:api][:keepalive_timeout] if @conn.respond_to?(:keep_alive_timeout)
+        @conn.close_on_empty_response = true
+        @conn.start
 
         logger.debug("Created net/http for #{@conn.address}:#{@conn.port}")
       end
