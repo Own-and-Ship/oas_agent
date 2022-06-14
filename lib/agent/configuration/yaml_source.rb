@@ -11,7 +11,7 @@ module OasAgent
           begin
             expanded_config_file_path = File.expand_path(config_path)
             if config_path.empty? || !File.exist?(expanded_config_file_path)
-              OasAgent::AgentContext.logger.warning("There was no config file found at #{expanded_config_file_path}")
+              OasAgent::AgentContext.logger.warn("There was no config file found at #{expanded_config_file_path}")
               return
             end
 
