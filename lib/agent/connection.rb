@@ -51,7 +51,7 @@ module OasAgent
       private
 
       def connect
-        if config[:proxy_host]
+        if config[:api][:proxy_host]
           logger.debug("Using proxy server #{config[:api][:proxy_host]}:#{config[:api][:proxy_port]}")
 
           proxy = Net::HTTP::Proxy(
