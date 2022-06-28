@@ -46,17 +46,6 @@ Or install it yourself as:
       # to send the reports.
       send_immediately: true
 
-#### If you're running in test mode:
-
-You will need the following config if you're running RSpec (minitest hasn't been tested yet):
-
-    test:
-      <<: *default_settings
-      enabled: true
-      reporter:
-        send_immediately: true
-        max_reports_to_batch: 1
-
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

@@ -33,11 +33,17 @@ module OasAgent
       # maximum number of reports to send in one batch, or the maximum time has
       # passed between reports, whichever happens first.
       def create_reporter_thread
-        Thread.new do
+        report_thread = Thread.new do
           loop do
+            break if @report_queue.closed?
             receive_reports_from_queue
             send_report_batch
           end
+        end
+
+        at_exit do
+          @report_queue.close
+          report_thread.join
         end
       end
 
@@ -46,13 +52,16 @@ module OasAgent
         # looping over an empty reports to send list and throwing a timeout
         # exception every @batched_report_timeout seconds when there are no
         # reports to send.
-        @batched_reports_to_send = [@report_queue.pop]
+        @batched_reports_to_send = [@report_queue.pop].compact
+        return if @report_queue.closed?
 
         # We only activate the timeout after the first report is received, there
         # is no point setting a delivery timeout on nothing
         Timeout::timeout(OasAgent::AgentContext.config[:reporter][:batched_report_timeout]) do
           while @batched_reports_to_send.size < OasAgent::AgentContext.config[:reporter][:max_reports_to_batch] do
-            @batched_reports_to_send << @report_queue.pop
+            report = @report_queue.pop
+            return if @report_queue.closed?
+            @batched_reports_to_send << report
           end
         end
       rescue Timeout::Error
