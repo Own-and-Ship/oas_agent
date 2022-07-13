@@ -37,7 +37,7 @@ module OasAgent
           loop do
             break if @report_queue.closed?
             receive_reports_from_queue
-            send_report_batch
+            send_report_batch unless @batched_reports_to_send.size.zero?
           end
         end
 
