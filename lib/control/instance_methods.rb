@@ -23,6 +23,11 @@ module OasAgent
           OasAgent::AgentContext.logger.info("Starting the Own & Ship agent in the #{env} environment for application #{OasAgent::AgentContext.config[:app_name]}")
         else
           OasAgent::AgentContext.logger.info("The Own & Ship agent in the #{env} environment for application #{OasAgent::AgentContext.config[:app_name]} will be disabled")
+          # In theory we could `return` here, but that would prevent the
+          # deprecation reporting code from being inserted and run when a
+          # deprecation is seen, so on environments where the deprecation
+          # reporting code is disabled, any incompatibility between the OAS code
+          # and the application code will be hidden.
         end
 
         start_agent
