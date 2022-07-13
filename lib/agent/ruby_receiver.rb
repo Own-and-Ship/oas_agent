@@ -13,8 +13,6 @@ module OasAgent
       end
 
       def push(message, callstack)
-        return unless config[:enabled]
-
         parsed_locations = callstack.map{|c| c.split(":")[0..1] }
         location = parsed_locations.detect{ |location, _| location.starts_with? @rails_root }
         location ||= parsed_locations.first

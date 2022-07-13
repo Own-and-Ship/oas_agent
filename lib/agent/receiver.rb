@@ -13,8 +13,6 @@ module OasAgent
       end
 
       def call(message, callstack, *args)
-        return unless config[:enabled]
-
         location = callstack.detect{ |location| location.absolute_path&.starts_with? @rails_root }
         location ||= callstack.first
 

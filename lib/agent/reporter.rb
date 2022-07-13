@@ -70,6 +70,7 @@ module OasAgent
       end
 
       def send_report_batch
+        return unless OasAgent::AgentContext.config[:enabled]
         @connection ||= Connection.new
 
         processed_reports = @batched_reports_to_send.inject({}) do |hash, element|
