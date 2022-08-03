@@ -19,6 +19,8 @@ module OasAgent
               port: 443,
               enforce_tls: true,
               read_timeout: 10,
+              write_timeout: 10,
+              open_timeout: 1,
               keepalive_timeout: 60,
               version: "1",
               reports_encoding: "identity",
