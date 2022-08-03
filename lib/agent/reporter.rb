@@ -4,6 +4,7 @@
 require "singleton"
 require "agent/connection"
 require "digest"
+require "timeout"
 
 module OasAgent
   module Agent
@@ -43,7 +44,11 @@ module OasAgent
 
         at_exit do
           @report_queue.close
-          report_thread.join
+          begin
+            Timeout.timeout(1) { report_thread.join }
+          rescue Timeout::Error
+            OasAgent::AgentContext.logger.warn("Timeout joining report thread during shutdown")
+          end
         end
       end
 
