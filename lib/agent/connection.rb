@@ -19,7 +19,7 @@ module OasAgent
       end
 
       def send_request(data)
-        connect unless @conn
+        connect unless @conn&.started?
 
         request = Net::HTTP::Post.new(config[:api][:reports_request_path], @default_headers)
         request["user-agent"] = config[:api][:user_agent]
@@ -35,7 +35,8 @@ module OasAgent
         attempts = 0
 
         begin
-          @conn.request(request)
+          response = @conn.request(request)
+          @conn.finish unless [200, 201, 204].include? response.code.to_i
         rescue *CONNECTION_ERRORS => e
           refresh_connection
           if attempts < config[:api][:max_retries_per_record]
