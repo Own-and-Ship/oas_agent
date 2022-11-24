@@ -13,18 +13,11 @@ module OasAgent
       end
 
       def call(message, callstack, *args)
-        location = callstack.detect{ |location| location.absolute_path&.starts_with? @rails_root }
-        location ||= callstack.first
-
         message = {
           type: "rails",
           version: @rails_version,
           message: message.sub(/\ADEPRECATION WARNING: /, "").sub(/\(called from.+\)/, "").strip,
-          location: {
-            path: location.absolute_path,
-            lineno: location.lineno
-          },
-          callstack: callstack
+          callstack: callstack.map(&:to_s)
         }
 
         @reporter.push(message)

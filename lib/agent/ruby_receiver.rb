@@ -13,19 +13,11 @@ module OasAgent
       end
 
       def push(message, callstack)
-        parsed_locations = callstack.map{|c| c.split(":")[0..1] }
-        location = parsed_locations.detect{ |location, _| location.starts_with? @rails_root }
-        location ||= parsed_locations.first
-
         message = {
           type: "ruby",
           version: RUBY_VERSION,
           message: message.strip,
-          location: {
-            path: location[0],
-            lineno: location[1]
-          },
-          callstack: callstack
+          callstack: callstack.map(&:to_s)
         }
 
         @reporter.push(message)

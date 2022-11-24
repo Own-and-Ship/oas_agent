@@ -3,6 +3,7 @@
 
 require "singleton"
 require "agent/connection"
+require "agent/events_cache"
 require "digest"
 require "timeout"
 
@@ -38,7 +39,7 @@ module OasAgent
           loop do
             break if @report_queue.closed?
             receive_reports_from_queue
-            send_report_batch unless @batched_reports_to_send.size.zero?
+            send_report_batch unless @event_cache.num_events.zero?
           end
         end
 
@@ -47,26 +48,30 @@ module OasAgent
           begin
             Timeout.timeout(1) { report_thread.join }
           rescue Timeout::Error
-            OasAgent::AgentContext.logger.warn("Timeout joining report thread during shutdown")
+            OasAgent::AgentContext.logger.warn("Timeout joining report thread during shutdown, report_queue is closed? #{@report_queue.closed?}")
           end
         end
       end
 
       def receive_reports_from_queue
+        @event_cache = OasAgent::Agent::EventsCache.new
+
         # Let's block waiting for the first report to send. This way we avoid
         # looping over an empty reports to send list and throwing a timeout
         # exception every @batched_report_timeout seconds when there are no
         # reports to send.
-        @batched_reports_to_send = [@report_queue.pop].compact
+        report = @report_queue.pop
         return if @report_queue.closed?
+
+        @event_cache.add_event(report[:message], report[:type], report[:version], report[:callstack]) unless report.nil?
 
         # We only activate the timeout after the first report is received, there
         # is no point setting a delivery timeout on nothing
         Timeout::timeout(OasAgent::AgentContext.config[:reporter][:batched_report_timeout]) do
-          while @batched_reports_to_send.size < OasAgent::AgentContext.config[:reporter][:max_reports_to_batch] do
+          while @event_cache.num_events < OasAgent::AgentContext.config[:reporter][:max_reports_to_batch] do
             report = @report_queue.pop
             return if @report_queue.closed?
-            @batched_reports_to_send << report
+            @event_cache.add_event(report[:message], report[:type], report[:version], report[:callstack])
           end
         end
       rescue Timeout::Error
@@ -77,33 +82,15 @@ module OasAgent
       def send_report_batch
         return unless OasAgent::AgentContext.config[:enabled]
         @connection ||= Connection.new
-
-        processed_reports = @batched_reports_to_send.inject({}) do |hash, element|
-          location = "#{element[:location][:path]}:#{element[:location][:lineno]}"
-          callstack_key = Digest::SHA256.hexdigest(element[:callstack].join(""))
-
-          hash[element[:message]] ||= {}
-          hash[element[:message]][:meta] ||= {}
-          hash[element[:message]][:meta][:software_type] = element[:type]
-          hash[element[:message]][:meta][:software_version] = element[:version]
-
-          hash[element[:message]][:events] ||= {}
-          hash[element[:message]][:events][location] ||= {count: 0, path: element[:location][:path], lineno: element[:location][:lineno]}
-          hash[element[:message]][:events][location][:count] += 1
-
-          hash[element[:message]][:events][location][:callstacks] ||= {}
-          hash[element[:message]][:events][location][:callstacks][callstack_key] ||= {count: 0}
-          hash[element[:message]][:events][location][:callstacks][callstack_key][:count] += 1
-          hash[element[:message]][:events][location][:callstacks][callstack_key][:callstack] ||= element[:callstack]
-
-          hash
-        end
+        time = Time.now.utc
 
         @connection.send_request(
           {
-            rails_env: @rails_env,
-            rails_root: @rails_root,
-            reports: processed_reports
+            environment: @rails_env,
+            program_root: @rails_root,
+            date: time.to_date.to_s,
+            hour: time.hour,
+            reports: @event_cache.serializable
           }
         )
       end
