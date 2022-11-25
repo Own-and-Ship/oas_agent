@@ -54,7 +54,7 @@ module OasAgent
       end
 
       def receive_reports_from_queue
-        @event_cache = OasAgent::Agent::EventsCache.new
+        @event_cache = OasAgent::Agent::EventsCache.new(program_root: @rails_root)
 
         # Let's block waiting for the first report to send. This way we avoid
         # looping over an empty reports to send list and throwing a timeout
@@ -87,7 +87,6 @@ module OasAgent
         @connection.send_request(
           {
             environment: @rails_env,
-            program_root: @rails_root,
             date: time.to_date.to_s,
             hour: time.hour,
             reports: @event_cache.serializable

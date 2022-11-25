@@ -10,16 +10,18 @@ module OasAgent
         software: 2,
         callstack: 3,
         software_version: 4,
-        counts: 5
+        program_root: 5,
+        counts: 6
       }.freeze
 
-      def initialize(event_hash, message, software, software_version, callstack)
+      def initialize(event_hash, message, software, software_version, callstack, program_root)
         @event_data = [
           event_hash,
           message,
           software,
           callstack,
           software_version,
+          program_root,
           0
         ]
       end
@@ -33,8 +35,8 @@ module OasAgent
       end
 
       class << self
-        def hash_for_event_data(message, software, version, callstack)
-          Digest::SHA256.hexdigest(callstack.join("") + message + software + version)
+        def hash_for_event_data(message, software, version, callstack, program_root)
+          Digest::SHA256.hexdigest(callstack.join("") + message + software + version + program_root)
         end
       end
     end
