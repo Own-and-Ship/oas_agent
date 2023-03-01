@@ -35,7 +35,7 @@ module OasAgent
       end
 
       class << self
-        def hash_for_event_data(message, software, version, callstack, program_root)
+        def hash_for_event_data(message: "", software: "", version: "", callstack: [], program_root: "")
           Digest::SHA256.hexdigest(callstack.join("") + message + software + version + program_root)
         end
       end
