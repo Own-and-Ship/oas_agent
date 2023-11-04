@@ -4,6 +4,7 @@
 require "agent/agent"
 require "agent/logger"
 require "agent_context"
+require "control/ruby_reporting"
 
 module OasAgent
   class Control
@@ -84,6 +85,10 @@ module OasAgent
 
     def api_port
       3000
+    end
+    
+    def insert_ruby_deprecation_behaviour(warning_constant = ::Warning)
+      warning_constant.prepend(OasAgent::Control::RubyReporting)
     end
   end
 end
