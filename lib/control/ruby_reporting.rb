@@ -7,7 +7,7 @@ module OasAgent
   class Control
     module RubyReporting
       def warn(warning)
-        super unless unless OasAgent::AgentContext.config[:common][:suppress_ruby_warnings]
+        super unless OasAgent::AgentContext.config[:common][:suppress_ruby_warnings]
         OasAgent::AgentContext.agent.ruby_receiver.push(warning.strip, caller) if warning.include?("deprecated")
       end
     end
