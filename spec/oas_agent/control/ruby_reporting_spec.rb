@@ -1,14 +1,7 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-# Older rubies don't have a Warning module, so refer to it by string
-RSpec.describe "Warning" do
-  before do
-    unless defined?(::Warning)
-      skip "Warning not defined on Ruby #{RUBY_VERSION}"
-    end
-  end
-
+RSpec.describe OasAgent::Control::RubyReporting do
   describe ".warn" do
     context "with deprecation ruby warnings" do
       it "forwards warnings to the agent"
