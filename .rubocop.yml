@@ -1,0 +1,80 @@
+AllCops:
+  DisabledByDefault: true
+
+Bundler:
+  Enabled: true
+
+Layout/TrailingEmptyLines:
+  Enabled: true
+
+Layout/IndentationStyle:
+  IndentationWidth: 2
+  Enabled: true
+  EnforcedStyle: spaces
+
+Layout/TrailingWhitespace:
+  Enabled: true
+
+Layout/SpaceBeforeComment:
+  Enabled: true
+
+Layout/SpaceBeforeFirstArg:
+  Enabled: true
+
+Layout/BlockEndNewline:
+  Enabled: true
+
+Layout/ClosingHeredocIndentation:
+  Enabled: true
+
+# This tries to force two tabs on a comment, there isn't a config option to make
+# it a single tab
+Layout/CommentIndentation:
+  Enabled: false
+
+Layout/DefEndAlignment:
+  Enabled: true
+
+Layout/EmptyLineAfterMagicComment:
+  Enabled: true
+
+Layout/EmptyLinesAroundArguments:
+  Enabled: true
+
+Layout/EndOfLine:
+  EnforcedStyle: lf
+  Enabled: true
+
+Layout/IndentationConsistency:
+  Enabled: true
+
+Layout/InitialIndentation:
+  Enabled: true
+
+Layout/LeadingCommentSpace:
+  Enabled: true
+
+Layout/RescueEnsureAlignment:
+  Enabled: true
+
+Layout/SpaceAfterMethodName:
+  Enabled: true
+
+Layout/SpaceAfterNot:
+  Enabled: true
+
+Layout/SpaceAfterSemicolon:
+  Enabled: true
+
+Layout/SpaceAroundKeyword:
+  Enabled: true
+
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+
+Style/NestedTernaryOperator:
+  Enabled: true
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
