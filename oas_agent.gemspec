@@ -12,11 +12,13 @@ Gem::Specification.new do |spec|
   spec.description   = %q{The Own & Ship ruby agent, reports deprecations and modernisation metrics to the Own & Ship web app}
   spec.homepage      = "https://github.com/wjessop/oas_agent"
 
-  spec.metadata["allowed_push_host"] = "https://rubygems.org"
+  if spec.respond_to?(:metadata)
+    spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
-  spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/wjessop/oas_agent"
-  spec.metadata["changelog_uri"] = "https://github.com/wjessop/oas_agent/blob/master/CHANGELOG.md"
+    spec.metadata["homepage_uri"] = spec.homepage
+    spec.metadata["source_code_uri"] = "https://github.com/wjessop/oas_agent"
+    spec.metadata["changelog_uri"] = "https://github.com/wjessop/oas_agent/blob/master/CHANGELOG.md"
+  end
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
