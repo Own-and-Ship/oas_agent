@@ -52,6 +52,10 @@ After checking out the repo, run `bin/setup` to install dependencies. Then, run 
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
+### Running one test
+
+    ruby -Itest test/lib/agent/ruby_receiver_test.rb
+
 ### Testing ye olde Ruby versions in Docker
 
 You can test old versions of Ruby locally as long as you have Docker installed. To test all versions this library supports you can run:
