@@ -1,0 +1,29 @@
+name: Ruby tests
+
+on:
+  push:
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: test
+    strategy:
+      matrix:
+        # We need to add "1.9.3", "2.0", "2.1", "2.2", "2.3", "2.4" at some point.
+        ruby: ["2.5", "2.6", "2.7", "3.0", "3.1", "3.2", "head"]
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v3
+      - name: rm Gemfile.lock
+        run: rm Gemfile.lock
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: false
+      - run: bundle --jobs 8 --retry 3
+      - run: bundle exec rake test
