@@ -10,6 +10,7 @@ RUN { \
 WORKDIR /usr/src/app
 COPY . .
 
+RUN rm -r Gemfile.lock .ruby-lsp .git .github .DS_Store
 # Install bundler version compatible with older Ruby versions and install gems
 RUN if ruby -e 'exit RUBY_VERSION < "2.6"'; then \
         gem install bundler -v '<= 2.3.26'; \
