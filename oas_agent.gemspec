@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
 
   # Development dependencies must be version specced to work from Ruby 1.9.3 up to Ruby head
   spec.add_development_dependency "rubocop"
-  spec.add_development_dependency "bundler", "~> 2.0"
+  spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "minitest", "~> 5.0"
   spec.add_development_dependency "nokogiri"
