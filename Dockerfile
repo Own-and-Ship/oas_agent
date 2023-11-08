@@ -16,7 +16,11 @@ RUN rm -r Gemfile.lock .ruby-lsp .git .github .DS_Store
 RUN sed -i '/spec\.add_development_dependency "rubocop"/d' oas_agent.gemspec
 
 # Install bundler version compatible with older Ruby versions and install gems
-RUN if ruby -e 'exit RUBY_VERSION < "2.6"'; then \
+RUN if ruby -e 'exit RUBY_VERSION < "2.3"' ; then \
+        gem install bundler -v1.17.3; \
+    elif ruby -e 'exit RUBY_VERSION < "2.4"' ; then \
+        gem install bundler -v '<= 2.3.26'; \
+    elif ruby -e 'exit RUBY_VERSION < "2.6"' ; then \
         gem install bundler -v '<= 2.3.26'; \
     else \
         gem install bundler -v "$(tail -n1 Gemfile.lock | tr -d ' ')"; \
