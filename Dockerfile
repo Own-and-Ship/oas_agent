@@ -16,6 +16,12 @@ RUN if ruby -e 'exit RUBY_VERSION < "2.6"'; then \
     else \
         gem install bundler -v "$(tail -n1 Gemfile.lock | tr -d ' ')"; \
     fi
+
+# I can't get nokogiri to build on the older versions with the build-in libraries.
+RUN if ruby -e 'exit RUBY_VERSION < "2.5"'; then \
+        bundle config build.nokogiri "--use-system-libraries --with-xml2-include=/usr/local/opt/libxml2/include/libxml2"; \
+    fi
+
 RUN bundle
 
 CMD ["bundle", "exec", "rake"]
