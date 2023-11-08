@@ -14,12 +14,11 @@ def normalize_version(version)
 end
 
 # Helper method to run docker-compose and capture the output, including build logs
-def docker_compose_up(service_name)
+def docker_compose_up(service_name, verbose: false)
   # Directing build output to a file
   build_log_file = "docker-build-#{service_name}.log"
-  quiet = ENV["VERBOSE"] ? "" : " > /dev/null"
+  quiet = verbose ? "" : " > /dev/null"
   system("docker-compose up --build --exit-code-from #{service_name} #{service_name} 2>&1 | tee #{build_log_file}#{quiet}")
-  build_log_file # Returning the log file path for reference
 end
 
 # Helper method to extract test results from container logs
@@ -62,7 +61,7 @@ task "test:all" do
   ruby_versions.each do |version|
     threads << Thread.new do
       service_name = "ruby_#{normalize_version(version)}"
-      docker_compose_up(service_name)
+      docker_compose_up(service_name, verbose: ENV["VERBOSE"])
       output = docker_compose_results(service_name)
 
       if output.include?(", 0 failures, 0 errors")
@@ -85,21 +84,18 @@ task "test:one", [:version] do |t, args|
   raise ArgumentError, "You must specify a Ruby version." unless version
   service_name = "ruby_#{normalize_version(version)}"
 
-  # Run the container in detached mode
-  build_log_file = docker_compose_up(service_name)
+  log = docker_compose_up(service_name, verbose: ENV["VERBOSE"])
 
-  # Now we can use docker compose to wait for the service to finish
-  system("docker compose up --exit-code-from #{service_name}")
-  system("docker compose logs #{service_name}")
+  output = docker_compose_results(service_name)
 
-  if ENV["VERBOSE"]
-    puts "Docker build logs for #{service_name}:"
-    puts File.read(build_log_file)
+  if output.include?(", 0 failures, 0 errors")
+    puts "Ruby #{version}: ✅ passed"
+  else
+    puts "Ruby #{version} ❌ failed, run this version using `rake \"test:one[#{version}]\"`"
   end
 
   # Stop and remove the container
   docker_compose_down(service_name)
 end
-
 
 task :default => :test
