@@ -33,7 +33,7 @@ module OasAgent
         attempts = 0
 
         begin
-          connect unless @conn&.started?
+          connect unless @conn && @conn.started?
           response = @conn.request(request)
           @conn.finish unless [200, 201, 204].include? response.code.to_i
         rescue *CONNECTION_ERRORS => e
