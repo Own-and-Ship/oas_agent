@@ -6,3 +6,5 @@
 /pkg/
 /spec/reports/
 /tmp/
+docker-build-ruby*log
+docker-compose.yml

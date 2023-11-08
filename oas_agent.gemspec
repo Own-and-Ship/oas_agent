@@ -27,10 +27,15 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "msgpack", "~> 1.6.0"
+  # Because we're asking clients to include this gem in their app with an
+  # unknown Ruby version we can't pin the version here as it could conflict with
+  # the environment the gem is runnign in.
+  spec.add_dependency "msgpack", "< 1.4.2"
 
+  # Development dependencies must be version specced to work from Ruby 1.9.3 up to Ruby head
   spec.add_development_dependency "rubocop"
   spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "minitest", "~> 5.0"
+  spec.add_development_dependency "nokogiri"
 end
