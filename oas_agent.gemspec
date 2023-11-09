@@ -32,7 +32,7 @@ Gem::Specification.new do |spec|
   # Because we're asking clients to include this gem in their app with an
   # unknown Ruby version we can't pin the version here as it could conflict with
   # the environment the gem is runnign in.
-  spec.add_dependency "msgpack", "< 1.4.2"
+  spec.add_dependency "msgpack"
 
   # Development dependencies must be version specced to work from Ruby 1.9.3 up to Ruby head
   spec.add_development_dependency "bundler"
