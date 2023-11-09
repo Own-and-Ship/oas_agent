@@ -1,0 +1,9 @@
+# Disallow everything at first
+.*
+*
+# Now whitelist files we want in the test containers
+!/lib/
+!/test/
+!/Gemfile
+!/Rakefile
+!/oas_agent.gemspec

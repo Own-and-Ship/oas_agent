@@ -11,7 +11,11 @@ WORKDIR /usr/src/app
 COPY . .
 
 # Install bundler version compatible with older Ruby versions and install gems
-RUN if ruby -e 'exit RUBY_VERSION < "2.6"'; then \
+RUN if ruby -e 'exit RUBY_VERSION < "2.3"' ; then \
+        gem install bundler -v1.17.3; \
+    elif ruby -e 'exit RUBY_VERSION < "2.4"' ; then \
+        gem install bundler -v '<= 2.3.26'; \
+    elif ruby -e 'exit RUBY_VERSION < "2.6"' ; then \
         gem install bundler -v '<= 2.3.26'; \
     else \
         gem install bundler -v "$(tail -n1 Gemfile.lock | tr -d ' ')"; \
@@ -22,6 +26,6 @@ RUN if ruby -e 'exit RUBY_VERSION < "2.5"'; then \
         bundle config build.nokogiri "--use-system-libraries --with-xml2-include=/usr/local/opt/libxml2/include/libxml2"; \
     fi
 
-RUN bundle
+RUN bundle --without lint
 
 CMD ["bundle", "exec", "rake"]

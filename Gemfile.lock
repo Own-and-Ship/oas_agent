@@ -48,7 +48,7 @@ PLATFORMS
   x86_64-darwin-22
 
 DEPENDENCIES
-  bundler (~> 2.0)
+  bundler
   minitest (~> 5.0)
   nokogiri
   oas_agent!
