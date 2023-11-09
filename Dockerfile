@@ -10,9 +10,6 @@ RUN { \
 WORKDIR /usr/src/app
 COPY . .
 
-# We don't need rubocop installed in the container.
-RUN sed -i '/spec\.add_development_dependency "rubocop"/d' oas_agent.gemspec
-
 # Install bundler version compatible with older Ruby versions and install gems
 RUN if ruby -e 'exit RUBY_VERSION < "2.3"' ; then \
         gem install bundler -v1.17.3; \
