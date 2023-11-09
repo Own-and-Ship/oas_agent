@@ -10,9 +10,7 @@ RUN { \
 WORKDIR /usr/src/app
 COPY . .
 
-RUN rm -r Gemfile.lock .ruby-lsp .git .github .DS_Store
-# If we're removing the Gemfile.lock we may as well remove rubocop, it's
-# a dev dep and won't affect tests or production
+# We don't need rubocop installed in the container.
 RUN sed -i '/spec\.add_development_dependency "rubocop"/d' oas_agent.gemspec
 
 # Install bundler version compatible with older Ruby versions and install gems
@@ -31,6 +29,6 @@ RUN if ruby -e 'exit RUBY_VERSION < "2.5"'; then \
         bundle config build.nokogiri "--use-system-libraries --with-xml2-include=/usr/local/opt/libxml2/include/libxml2"; \
     fi
 
-RUN bundle
+RUN bundle --without lint
 
 CMD ["bundle", "exec", "rake"]
