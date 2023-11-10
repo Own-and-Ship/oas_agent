@@ -26,7 +26,7 @@ task "docker-compose.yml" => "Rakefile" do
   docker_compose_yml = {
     "version" => "3.8", # Docker engine 19.03.0+
     "services" => SUPPORTED_RUBY_VERSIONS.each_with_object({}) do |version, services|
-      image_version = version == "3.3" ? "3.3-rc" : version
+      image_version = version.start_with?("3.3") ? "3.3-rc" : version
       gemfile = "gemfiles/Gemfile.ruby-#{version}.rb"
       services["ruby-#{version.gsub(".", "-")}"] = {
         "build" => {
