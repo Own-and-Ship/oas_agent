@@ -20,7 +20,8 @@ module OasAgent
         @rails_root = Rails.root.expand_path.to_s
       end
 
-      def push(data, non_block: true)
+      def push(data, options = {})
+        non_block = options.fetch(:non_block, true)
         @report_queue.push(data, non_block)
 
         if OasAgent::AgentContext.config[:reporter][:send_immediately]
