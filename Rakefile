@@ -27,7 +27,14 @@ task "docker-compose.yml" => "Rakefile" do
     "version" => "3.8", # Docker engine 19.03.0+
     "services" => SUPPORTED_RUBY_VERSIONS.each_with_object({}) do |version, services|
       image_version = version.start_with?("3.3") ? "3.3-rc" : version
-      gemfile = "gemfiles/Gemfile.ruby-#{version}.rb"
+      gemfile = case version
+      when "1.9.3", "2.0.0"
+        "gemfiles/Gemfile.ruby-#{version}.rb"
+      when /^3\.3/
+        "gemfiles/Gemfile.ruby-3.3.rb"
+      else
+        "gemfiles/Gemfile.ruby-#{version.split(".").first(2).join(".")}.rb"
+      end
       services["ruby-#{version.gsub(".", "-")}"] = {
         "build" => {
           "context" => ".",
@@ -41,9 +48,6 @@ task "docker-compose.yml" => "Rakefile" do
           ".:/app",
         ],
         "working_dir" => "/app",
-        "environment" => {
-          "BUNDLE_GEMFILE" => "gemfiles/Gemfile.ruby-#{version}.rb"
-        },
       }
     end
   }
