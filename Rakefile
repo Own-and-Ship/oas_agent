@@ -20,7 +20,25 @@ SUPPORTED_RUBY_VERSIONS = [
 ]
 
 desc "Run tests across all Ruby versions in Docker"
-multitask "test:all" => SUPPORTED_RUBY_VERSIONS.map { |version| "docker:test_ruby_#{version}" }
+task "test:all" do
+  require "thread"
+  require "open3"
+
+  # Run tests in parallel
+  threads = SUPPORTED_RUBY_VERSIONS.map do |version|
+    Thread.new do
+      output, status = Open3.capture2e("docker", "compose", "run", "ruby-#{version.gsub(".", "-")}", "bundle", "exec", "rake", "test")
+      if status.success? && output.include?(", 0 failures, 0 errors")
+        puts "Ruby #{version}: ✅ passed"
+      else
+        puts %{Ruby #{version} ❌ failed, run this version using `rake "docker:test[#{version}]"`}
+      end
+    end
+  end
+
+  # Wait for all threads to complete
+  threads.each(&:join)
+end
 
 task "docker-compose.yml" => "Rakefile" do
   docker_compose_yml = {
