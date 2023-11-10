@@ -2,6 +2,8 @@
 .*
 *
 # Now whitelist files we want in the test containers
+!/docker/
+!/gemfiles/
 !/lib/
 !/test/
 !/Gemfile
