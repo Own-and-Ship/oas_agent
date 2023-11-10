@@ -17,8 +17,8 @@ SUPPORTED_RUBY_VERSIONS = [
   "3.0", "3.1", "3.2", "3.3"
 ]
 
-# desc "Run tests across all Ruby versions in Docker"
-# task "test:all" => SUPPORTED_RUBY_VERSIONS.map { |version| "rv:test[#{version}]" }
+desc "Run tests across all Ruby versions in Docker"
+multitask "test:all" => SUPPORTED_RUBY_VERSIONS.map { |version| "docker:test_ruby_#{version}" }
 
 task "docker-compose.yml": "Rakefile" do
   docker_compose_yml = {
@@ -51,29 +51,44 @@ task "docker-compose.yml": "Rakefile" do
 end
 
 namespace :docker do
-  task build: "docker-compose.yml"
+  # Depending on tasks with variables is basically impossible, so we define "internal" tasks
+  # with the ruby version in the name of the task.
+  SUPPORTED_RUBY_VERSIONS.each do |version|
+    task "build_ruby_#{version}": "docker-compose.yml" do
+      sh "docker", "compose", "build", "ruby-#{version.gsub(".", "-")}"
+    end
+
+    task "shell_ruby_#{version}": "build_ruby_#{version}" do
+      sh "docker", "compose", "run", "ruby-#{version.gsub(".", "-")}", "bash"
+    end
+
+    task "test_ruby_#{version}": "build_ruby_#{version}" do
+      sh "docker", "compose", "run", "ruby-#{version.gsub(".", "-")}", "bundle", "exec", "rake", "test"
+    end
+  end
+
+  # Then we define "public" tasks that call the internal tasks based on variable argument
+  desc "Build docker image for given ruby version"
   task :build, [:version] do |t, args|
     version = args[:version]
-    raise ArgumentError, "You must specify a Ruby version." unless version
+    raise ArgumentError, "You must specify a supported Ruby version." unless SUPPORTED_RUBY_VERSIONS.include?(version)
 
-    sh "docker", "compose", "build", "ruby-#{version.gsub(".", "-")}"
+    Rake::Task["docker:build_ruby_#{args[:version]}"].invoke
   end
 
-  task shell: :build
+  desc "Open a shell in the docker image for given ruby version"
   task :shell, [:version] do |t, args|
     version = args[:version]
-    raise ArgumentError, "You must specify a Ruby version." unless version
+    raise ArgumentError, "You must specify a supported Ruby version." unless SUPPORTED_RUBY_VERSIONS.include?(version)
 
-    sh "docker", "compose", "run", "ruby-#{version.gsub(".", "-")}", "bash"
+    Rake::Task["docker:shell_ruby_#{args[:version]}"].invoke
   end
 
-  task test: :build
+  desc "Run tests in the docker image for given ruby version"
   task :test, [:version] do |t, args|
     version = args[:version]
-    raise ArgumentError, "You must specify a Ruby version." unless version
+    raise ArgumentError, "You must specify a supported Ruby version." unless SUPPORTED_RUBY_VERSIONS.include?(version)
 
-    Rake::Task["docker:build"].invoke(version)
-
-    sh "docker", "compose", "run", "ruby-#{version.gsub(".", "-")}", "bundle", "exec", "rake", "test"
+    Rake::Task["docker:test_ruby_#{args[:version]}"].invoke
   end
 end
