@@ -110,24 +110,27 @@ namespace :docker do
   desc "Build docker image for given ruby version"
   task :build, [:version] do |t, args|
     version = args[:version] || ENV["VERSION"]
-    raise ArgumentError, "You must specify a supported Ruby version." unless SUPPORTED_RUBY_VERSIONS.include?(version)
+    versioned_task_name = "docker:build_ruby_#{args[:version]}"
+    raise ArgumentError, "You must specify a supported Ruby version. Available versions: #{SUPPORTED_RUBY_VERSIONS.join(", ")}" unless Rake::Task.task_defined?(versioned_task_name)
 
-    Rake::Task["docker:build_ruby_#{args[:version]}"].invoke
+    Rake::Task[versioned_task_name].invoke
   end
 
   desc "Open a shell in the docker image for given ruby version"
   task :shell, [:version] do |t, args|
     version = args[:version] || ENV["VERSION"]
-    raise ArgumentError, "You must specify a supported Ruby version." unless SUPPORTED_RUBY_VERSIONS.include?(version)
+    versioned_task_name = "docker:shell_ruby_#{args[:version]}"
+    raise ArgumentError, "You must specify a supported Ruby version. Available versions: #{SUPPORTED_RUBY_VERSIONS.join(", ")}" unless Rake::Task.task_defined?(versioned_task_name)
 
-    Rake::Task["docker:shell_ruby_#{args[:version]}"].invoke
+    Rake::Task[versioned_task_name].invoke
   end
 
   desc "Run tests in the docker image for given ruby version"
   task :test, [:version] do |t, args|
     version = args[:version] || ENV["VERSION"]
-    raise ArgumentError, "You must specify a supported Ruby version." unless SUPPORTED_RUBY_VERSIONS.include?(version)
+    versioned_task_name = "docker:test_ruby_#{args[:version]}"
+    raise ArgumentError, "You must specify a supported Ruby version. Available versions: #{SUPPORTED_RUBY_VERSIONS.join(", ")}" unless Rake::Task.task_defined?(versioned_task_name)
 
-    Rake::Task["docker:test_ruby_#{args[:version]}"].invoke
+    Rake::Task[versioned_task_name].invoke
   end
 end
