@@ -7,7 +7,15 @@ require "json"
 module OasAgent
   module Agent
     class Connection
-      CONNECTION_ERRORS = [Net::HTTPRequestTimeOut, Net::HTTPGatewayTimeOut, Net::OpenTimeout, Net::ReadTimeout, EOFError, SystemCallError, SocketError].freeze
+      CONNECTION_ERRORS = [
+        Net::HTTPRequestTimeOut,
+        Net::HTTPGatewayTimeOut,
+        EOFError,
+        SystemCallError,
+        SocketError,
+        (Net::ReadTimeout if defined?(Net::ReadTimeout)),
+        (Net::OpenTimeout if defined?(Net::OpenTimeout)),
+      ].compact.freeze
 
       def initialize
         @default_headers = {
@@ -33,7 +41,7 @@ module OasAgent
         attempts = 0
 
         begin
-          connect unless @conn&.started?
+          connect unless @conn && @conn.started?
           response = @conn.request(request)
           @conn.finish unless [200, 201, 204].include? response.code.to_i
         rescue *CONNECTION_ERRORS => e
@@ -105,5 +113,3 @@ module OasAgent
     end
   end
 end
-
-

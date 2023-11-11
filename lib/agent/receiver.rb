@@ -6,9 +6,9 @@ require "agent/configuration/manager"
 module OasAgent
   module Agent
     class Receiver
-      def initialize(reporter:, root:)
-        @reporter = reporter
-        @rails_root = root
+      def initialize(options = {})
+        @reporter = options.fetch(:reporter)
+        @rails_root = options.fetch(:root)
         @rails_version = Rails::VERSION::STRING
       end
 

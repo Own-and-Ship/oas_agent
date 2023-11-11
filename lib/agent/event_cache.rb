@@ -14,6 +14,13 @@ module OasAgent
         counts: 6
       }.freeze
 
+      def self.hash_for_event_data(options = {})
+        Digest::SHA256.hexdigest(
+          options.fetch(:callstack).join("") + options.fetch(:message) + options.fetch(:software) + \
+            options.fetch(:version) + options.fetch(:program_root)
+        )
+      end
+
       def initialize(event_hash, message, software, software_version, callstack, program_root)
         @event_data = [
           event_hash,
@@ -32,12 +39,6 @@ module OasAgent
 
       def for_serialization
         @event_data
-      end
-
-      class << self
-        def hash_for_event_data(message: "", software: "", version: "", callstack: [], program_root: "")
-          Digest::SHA256.hexdigest(callstack.join("") + message + software + version + program_root)
-        end
       end
     end
   end

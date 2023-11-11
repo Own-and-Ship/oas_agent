@@ -10,14 +10,8 @@ GEM
     ast (2.4.2)
     json (2.6.3)
     language_server-protocol (3.17.0.3)
-    mini_portile2 (2.6.1)
     minitest (5.13.0)
     msgpack (1.7.2)
-    nokogiri (1.12.5)
-      mini_portile2 (~> 2.6.1)
-      racc (~> 1.4)
-    nokogiri (1.12.5-x86_64-darwin)
-      racc (~> 1.4)
     parallel (1.23.0)
     parser (3.2.2.4)
       ast (~> 2.4.1)
@@ -50,10 +44,9 @@ PLATFORMS
 DEPENDENCIES
   bundler
   minitest (~> 5.0)
-  nokogiri
   oas_agent!
   rake
   rubocop
 
 BUNDLED WITH
-   2.4.6
+   2.4.21

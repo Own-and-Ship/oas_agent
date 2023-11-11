@@ -1,0 +1,24 @@
+PATH
+  remote: ..
+  specs:
+    oas_agent (0.0.1)
+      msgpack
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    minitest (5.20.0)
+    msgpack (1.7.2)
+    rake (13.1.0)
+
+PLATFORMS
+  aarch64-linux
+
+DEPENDENCIES
+  bundler
+  minitest (~> 5.0)
+  oas_agent!
+  rake
+
+BUNDLED WITH
+   2.3.26
