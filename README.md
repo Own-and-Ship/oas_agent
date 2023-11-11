@@ -62,7 +62,13 @@ The test suite is powered by [minitest](https://github.com/minitest/minitest), y
 
 ### Testing ye olde Ruby versions in Docker
 
-You can test old versions of Ruby locally as long as you have Docker installed. To test all versions this library supports you can run:
+There are two options for testing in docker, the first is to install [nektos/act](https://github.com/nektos/act#readme) and invoke the test CI job (uses docker locally):
+
+```shell
+act --container-architecture linux/amd64 --job "test"
+```
+
+The second, and more controllable/customisable way is to lean on docker locally through rake tasks. To test all versions this library supports you can run:
 
     rake test:all
 
@@ -85,7 +91,7 @@ You will get an output something like this:
 Where a version fails you will be given a command to run the tests for that specific version:
 
     rake "docker:test[2.4.10]"
-    or…
+    # or…
     VERSION=2.4.10 rake docker:test
 
 This will give you the test suite output too so you can see what failed. If you need to diagnose Docker/build issues then pass VERBOSE to get the docker build output:
