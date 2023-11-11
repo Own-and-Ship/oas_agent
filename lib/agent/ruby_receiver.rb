@@ -7,9 +7,9 @@ require "singleton"
 module OasAgent
   module Agent
     class RubyReceiver
-      def initialize(reporter:, root:)
-        @reporter = reporter
-        @rails_root = root
+      def initialize(options = {})
+        @reporter = options.fetch(:reporter)
+        @rails_root = options.fetch(:root)
       end
 
       def push(message, callstack)

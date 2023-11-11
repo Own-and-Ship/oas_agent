@@ -9,8 +9,8 @@ require "base64"
 module OasAgent
   module Agent
     class EventsCache
-      def initialize(program_root:)
-        @program_root = program_root
+      def initialize(options = {})
+        @program_root = options.fetch(:program_root)
         @events = {}
       end
 

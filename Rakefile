@@ -1,3 +1,6 @@
+# encoding: utf-8
+# frozen_string_literal: true
+
 # This file must work on Ruby 1.9.3, sorry.
 
 require "bundler/gem_tasks"
