@@ -83,16 +83,26 @@ namespace :docker do
   # Depending on tasks with variables is basically impossible, so we define "internal" tasks
   # with the ruby version in the name of the task.
   SUPPORTED_RUBY_VERSIONS.each do |version|
+    service = "ruby-#{version.gsub(".", "-")}"
+
     task "build_ruby_#{version}" => "docker-compose.yml" do
-      sh "docker", "compose", "build", "ruby-#{version.gsub(".", "-")}"
+      sh "docker", "compose", "build", service
     end
 
     task "shell_ruby_#{version}" => "build_ruby_#{version}" do
-      sh "docker", "compose", "run", "ruby-#{version.gsub(".", "-")}", "bash"
+      sh "docker", "compose", "run", service, "bash"
     end
 
     task "test_ruby_#{version}" => "build_ruby_#{version}" do
-      sh "docker", "compose", "run", "ruby-#{version.gsub(".", "-")}", "bundle", "exec", "rake", "test"
+      sh "docker", "compose", "run", service, "bundle", "exec", "rake", "test"
+    end
+
+    # Shorthand for Ruby 2.1+ (eg, `rake docker:build_ruby_2.1` -> `rake docker:build_ruby_2.1.10`)
+    if version != "1.9.3" && version != "2.0.0"
+      short_version = version.split(".").first(2).join(".")
+      task "build_ruby_#{short_version}" => "build_ruby_#{version}"
+      task "shell_ruby_#{short_version}" => "shell_ruby_#{version}"
+      task "test_ruby_#{short_version}" => "test_ruby_#{version}"
     end
   end
 
