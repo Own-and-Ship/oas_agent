@@ -46,7 +46,7 @@ module OasAgent
 
       def set_log_format
         @hostname = OasAgent::Agent::Hostname.get
-        @prefix = '** [Own & Ship]'
+        @prefix = "** [Own & Ship]"
         @log.formatter = Proc.new do |severity, timestamp, progname, msg|
           "#{@prefix}[#{timestamp.strftime("%F %H:%M:%S %z")} #{@hostname} (#{$$})] #{severity} : #{msg}\n"
         end

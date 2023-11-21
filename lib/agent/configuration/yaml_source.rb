@@ -43,7 +43,7 @@ module OasAgent
             # Exclude lines that are commented out so failing Ruby code in an
             # ERB template commented at the YML level is fine. Leave the line,
             # though, so ERB line numbers remain correct.
-            file.gsub!(/^\s*#.*$/, '#')
+            file.gsub!(/^\s*#.*$/, "#")
             ERB.new(file).result(binding)
           rescue ScriptError, StandardError => e
             logger.error("Failed ERB processing configuration file. This is typically caused by a Ruby error in <% %> templating blocks in your own_and_ship.yml file: #{e}")

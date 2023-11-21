@@ -11,12 +11,12 @@ module OasAgent
       @config ||= Agent::Configuration::Manager.new
     end
 
-    def agent #:nodoc:
+    def agent # :nodoc:
       return @agent if @agent
       nil
     end
 
-    def agent=(new_instance) #:nodoc:
+    def agent=(new_instance) # :nodoc:
       @agent = new_instance
     end
 

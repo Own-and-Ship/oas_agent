@@ -1,7 +1,7 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-require 'socket'
+require "socket"
 
 module OasAgent
   module Agent
@@ -23,7 +23,7 @@ module OasAgent
       end
 
       def dyno_name
-        ENV['DYNO']
+        ENV["DYNO"]
       end
 
       def self.local? host_or_ip
