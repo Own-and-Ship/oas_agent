@@ -16,7 +16,7 @@ module OasAgent
         message = {
           type: "ruby",
           version: RUBY_VERSION,
-          message: cleanup_ruby_kwargs_warning_message(message).strip,
+          message: cleanup_keyword_argument_as_last_hash_parameter_message(cleanup_ruby_kwargs_warning_message(message)).strip,
           callstack: callstack.map(&:to_s)
         }
 
@@ -35,6 +35,15 @@ module OasAgent
         kwargs_message = "Using the last argument as keyword parameters is deprecated; maybe ** should be added to the call"
         if message.end_with? kwargs_message
           return kwargs_message
+        else
+          return message
+        end
+      end
+
+      def cleanup_keyword_argument_as_last_hash_parameter_message(message)
+        message_suffix = "Passing the keyword argument as the last hash parameter is deprecated"
+        if message.end_with? message_suffix
+          return message_suffix
         else
           return message
         end
