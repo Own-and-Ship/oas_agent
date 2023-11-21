@@ -7,15 +7,6 @@ require "singleton"
 module OasAgent
   module Agent
     class RubyReceiver
-      # These are deprecations (usually from Ruby) where the location is
-      # included in the deprecation warning. This effectively creates duplicate
-      # deprecations all with the same underlying cause, when we really want
-      # them to be treated as one single deprecation type.
-      STRIPPABLE_SUFFIXES = [
-        "Using the last argument as keyword parameters is deprecated; maybe ** should be added to the call",
-        "Passing the keyword argument as the last hash parameter is deprecated"
-      ].freeze
-
       def initialize(options = {})
         @reporter = options.fetch(:reporter)
         @rails_root = options.fetch(:root)
@@ -25,7 +16,7 @@ module OasAgent
         message = {
           type: "ruby",
           version: RUBY_VERSION,
-          message: strip_path_prefixed_message(message).strip,
+          message: strip_path_prefixed_message(message, callstack).strip,
           callstack: callstack.map(&:to_s)
         }
 
@@ -36,8 +27,17 @@ module OasAgent
 
       private
 
-      def strip_path_prefixed_message(message)
-        STRIPPABLE_SUFFIXES.detect( ->{ message }) { |suffix| message.end_with?(suffix) }
+      # Ruby warning message contain the location that they happened, data that
+      # is duplicated in the callstack. This causes each Ruby deprecation
+      # message happening at a different location to appear unique so we
+      # de-duplicate them by stripping the preamble.
+      def strip_path_prefixed_message(message, callstack)
+        prefix, message_suffix = message.split(": warning: ", 2)
+        if callstack.any? { |callstack_entry| callstack_entry.include?(prefix) }
+          message_suffix
+        else
+          message
+        end
       end
 
       def config
