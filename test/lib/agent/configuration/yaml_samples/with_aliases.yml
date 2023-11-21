@@ -1,0 +1,7 @@
+common: &default_settings
+  # The application name for logging purposes
+  app_name: Someapp
+
+production:
+  <<: *default_settings
+  enabled: true
