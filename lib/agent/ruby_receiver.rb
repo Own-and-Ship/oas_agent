@@ -16,7 +16,7 @@ module OasAgent
         message = {
           type: "ruby",
           version: RUBY_VERSION,
-          message: cleanup_ruby_kwargs_warning_message(message).strip,
+          message: strip_path_prefixed_message(message, callstack).strip,
           callstack: callstack.map(&:to_s)
         }
 
@@ -27,16 +27,16 @@ module OasAgent
 
       private
 
-      # Ruby kwargs warnings include the file path and line number and this
-      # causes a new deprecation message to get created for each code location,
-      # so we remove the unique location from the message. We will get that data
-      # anyway in the callstack.
-      def cleanup_ruby_kwargs_warning_message(message)
-        kwargs_message = "Using the last argument as keyword parameters is deprecated; maybe ** should be added to the call"
-        if message.end_with? kwargs_message
-          return kwargs_message
+      # Ruby warning message contain the location that they happened, data that
+      # is duplicated in the callstack. This causes each Ruby deprecation
+      # message happening at a different location to appear unique so we
+      # de-duplicate them by stripping the preamble.
+      def strip_path_prefixed_message(message, callstack)
+        prefix, message_suffix = message.split(": warning: ", 2)
+        if callstack.any? { |callstack_entry| callstack_entry.include?(prefix) }
+          message_suffix
         else
-          return message
+          message
         end
       end
 
