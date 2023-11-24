@@ -22,8 +22,9 @@ module OasAgent
         @reporter_thread = create_reporter_thread unless OasAgent::AgentContext.config[:reporter][:send_immediately]
       end
 
-      def push(data, options = {})
-        non_block = options.fetch(:non_block, true)
+      # @param data [Object]
+      # @param non_block [Boolean] Whether to block if the queue is full
+      def push(data, non_block = true)
         @report_queue.push(data, non_block)
 
         if OasAgent::AgentContext.config[:reporter][:send_immediately]
