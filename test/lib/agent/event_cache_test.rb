@@ -27,6 +27,6 @@ class OasAgentRubyEventCacheTest < Minitest::Test
 
   def test_hash_for_event_data
     assert_equal "f2fa641a7c6d5beb6f7984678d95e06a1e057ae9e50b0c4eadd8c238942d506c",
-      OasAgent::Agent::EventCache.hash_for_event_data(message: "some message", software: "ruby", version: "1.2.3.4", callstack: ["a", "b", "c"], program_root: "/some/program/root")
+      OasAgent::Agent::EventCache.hash_for_event_data("some message", "ruby", "1.2.3.4", ["a", "b", "c"], "/some/program/root")
   end
 end
