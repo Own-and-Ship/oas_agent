@@ -6,7 +6,7 @@ require "agent/agent"
 class OasAgentRubyReceiverTest < Minitest::Test
   def test_leaves_messages_it_doesnt_recognise_unchanged
     fake_reporter = []
-    r = OasAgent::Agent::RubyReceiver.new(reporter: fake_reporter, root: "/a/b/c")
+    r = OasAgent::Agent::RubyReceiver.new(fake_reporter, "/a/b/c")
     r.push("/home/runner/app/lib/resource_list.rb:100: info: Passing the keyword argument as the last hash parameter is OK thanks", ["a", "b"])
     assert_equal "/home/runner/app/lib/resource_list.rb:100: info: Passing the keyword argument as the last hash parameter is OK thanks", fake_reporter.first[:message]
   end
@@ -27,7 +27,7 @@ class OasAgentRubyReceiverTest < Minitest::Test
     ]
 
     fake_reporter = []
-    r = OasAgent::Agent::RubyReceiver.new(reporter: fake_reporter, root: "/home/runner/work/someapp")
+    r = OasAgent::Agent::RubyReceiver.new(fake_reporter, "/home/runner/work/someapp")
     r.push(deprecation_message, callstack)
     assert_equal expected_message, fake_reporter.first[:message]
   end
