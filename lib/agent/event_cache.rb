@@ -16,8 +16,7 @@ module OasAgent
 
       def self.hash_for_event_data(options = {})
         Digest::SHA256.hexdigest(
-          options.fetch(:callstack).join("") + options.fetch(:message) + options.fetch(:software) + \
-            options.fetch(:version) + options.fetch(:program_root)
+          "#{options.fetch(:callstack).join('')}#{options.fetch(:message)}#{options.fetch(:software)}#{options.fetch(:version)}#{options.fetch(:program_root)}"
         )
       end
 

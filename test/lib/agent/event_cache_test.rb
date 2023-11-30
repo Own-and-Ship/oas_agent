@@ -29,4 +29,8 @@ class OasAgentRubyEventCacheTest < Minitest::Test
     assert_equal "f2fa641a7c6d5beb6f7984678d95e06a1e057ae9e50b0c4eadd8c238942d506c",
       OasAgent::Agent::EventCache.hash_for_event_data(message: "some message", software: "ruby", version: "1.2.3.4", callstack: ["a", "b", "c"], program_root: "/some/program/root")
   end
+
+  def test_hash_for_event_data_with_nil_inputs
+    assert_equal "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", OasAgent::Agent::EventCache.hash_for_event_data(callstack: [], message: nil, software: nil, version: nil, program_root: nil)
+  end
 end
