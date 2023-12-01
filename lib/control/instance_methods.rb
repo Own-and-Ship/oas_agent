@@ -16,6 +16,16 @@ module OasAgent
         OasAgent::AgentContext.logger = OasAgent::Agent::Logger.new
         OasAgent::AgentContext.agent = OasAgent::Agent::Base.instance
 
+        # At some point this got flipped to false by default in Rails for
+        # production environments, but it breaks deprecation reporting for Own &
+        # Ship so set it to true.
+        if options[:config].active_support.respond_to? :report_deprecations
+          if !options[:config].active_support.report_deprecations
+            OasAgent::AgentContext.logger.warn "Deprecation reporting is turned off (`config.active_support.report_deprecations = false`) but Own & Ship requires deprecation reporting to be enabled to work. We are enabling the setting for you."
+          end
+          options[:config].active_support.report_deprecations = true
+        end
+
         configure_agent(env, options)
         env_name = options.delete(:env) and self.env = env_name
 
