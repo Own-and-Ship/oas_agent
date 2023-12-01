@@ -14,10 +14,12 @@ module OasAgent
 
       # Create a new agent and start the reporter thread.
       def initialize
-        @report_queue = SizedQueue.new(OasAgent::AgentContext.config[:reporter][:max_reports_to_queue])
-        @reporter_thread = create_reporter_thread unless OasAgent::AgentContext.config[:reporter][:send_immediately]
         @rails_env = Rails.env
         @rails_root = Rails.root.expand_path.to_s
+        @report_queue = SizedQueue.new(OasAgent::AgentContext.config[:reporter][:max_reports_to_queue])
+
+        # Reporter thread must be created last as it requires data created previously
+        @reporter_thread = create_reporter_thread unless OasAgent::AgentContext.config[:reporter][:send_immediately]
       end
 
       def push(data, options = {})
