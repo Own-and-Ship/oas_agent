@@ -36,8 +36,8 @@ module OasAgent
 
       def start
         @reporter = Reporter.instance
-        @receiver = Receiver.new(reporter: @reporter, root: Rails.root.expand_path.to_s)
-        @ruby_receiver = RubyReceiver.new(reporter: @reporter, root: Rails.root.expand_path.to_s)
+        @receiver = Receiver.new(@reporter, Rails.root.expand_path.to_s)
+        @ruby_receiver = RubyReceiver.new(@reporter, Rails.root.expand_path.to_s)
       end
     end
   end

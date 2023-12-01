@@ -22,8 +22,9 @@ module OasAgent
         @reporter_thread = create_reporter_thread unless OasAgent::AgentContext.config[:reporter][:send_immediately]
       end
 
-      def push(data, options = {})
-        non_block = options.fetch(:non_block, true)
+      # @param data [Object]
+      # @param non_block [Boolean] Whether to block if the queue is full
+      def push(data, non_block = true)
         @report_queue.push(data, non_block)
 
         if OasAgent::AgentContext.config[:reporter][:send_immediately]
@@ -57,7 +58,7 @@ module OasAgent
       end
 
       def receive_reports_from_queue
-        @event_cache = OasAgent::Agent::EventsCache.new(program_root: @rails_root)
+        @event_cache = OasAgent::Agent::EventsCache.new(@rails_root)
 
         # Let's block waiting for the first report to send. This way we avoid
         # looping over an empty reports to send list and throwing a timeout

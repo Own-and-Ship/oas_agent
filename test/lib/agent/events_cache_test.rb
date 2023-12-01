@@ -14,14 +14,14 @@ class OasAgentRubyEventsCacheTest < Minitest::Test
   end
 
   def test_maintains_a_count_of_similar_events
-    event_cache = OasAgent::Agent::EventsCache.new(program_root: "/some/root")
+    event_cache = OasAgent::Agent::EventsCache.new("/some/root")
     event_cache.add_event("Some deprecation message", "Ruby", "9000", ["a", "b"])
     event_cache.add_event("Some deprecation message", "Ruby", "9000", ["a", "b"])
     assert_equal 2, deserialize_event_cache(event_cache.serializable).first[OasAgent::Agent::EventCache::DATA_INDEXES[:counts]]
   end
 
   def test_counts_separate_software_versions_separately
-    event_cache = OasAgent::Agent::EventsCache.new(program_root: "/some/root")
+    event_cache = OasAgent::Agent::EventsCache.new("/some/root")
     event_cache.add_event("Some deprecation message", "Ruby", "9000", ["a", "b"])
     event_cache.add_event("Some deprecation message", "Ruby", "9000", ["a", "b"])
 
@@ -32,7 +32,7 @@ class OasAgentRubyEventsCacheTest < Minitest::Test
   end
 
   def test_maintains_separate_counts_of_distinct_events
-    event_cache = OasAgent::Agent::EventsCache.new(program_root: "/some/root")
+    event_cache = OasAgent::Agent::EventsCache.new("/some/root")
     event_cache.add_event("Some deprecation message", "Ruby", "9000", ["a", "b"])
     event_cache.add_event("Some deprecation message", "Ruby", "9000", ["a", "b"])
 
@@ -56,7 +56,7 @@ class OasAgentRubyEventsCacheTest < Minitest::Test
   end
 
   def test_it_knows_the_number_of_events_it_contains
-    event_cache = OasAgent::Agent::EventsCache.new(program_root: "/some/root")
+    event_cache = OasAgent::Agent::EventsCache.new("/some/root")
     event_cache.add_event("Some deprecation message", "Ruby", "9000", ["a", "b"])
     event_cache.add_event("Some deprecation message", "Ruby", "9000", ["a", "b"])
 

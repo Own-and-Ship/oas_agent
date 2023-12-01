@@ -9,13 +9,14 @@ require "base64"
 module OasAgent
   module Agent
     class EventsCache
-      def initialize(options = {})
-        @program_root = options.fetch(:program_root)
+      # @param program_root [String]
+      def initialize(program_root)
+        @program_root = program_root
         @events = {}
       end
 
       def add_event(message, software, version, callstack)
-        eh = EventCache.hash_for_event_data(message: message, software: software, version: version, callstack: callstack, program_root: @program_root)
+        eh = EventCache.hash_for_event_data(message, software, version, callstack, @program_root)
 
         if !@events.has_key?(eh)
           @events[eh] = EventCache.new(eh, message, software, version, callstack, @program_root)
