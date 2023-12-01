@@ -31,7 +31,7 @@ module OasAgent
         end
 
         start_agent
-        insert_ruby_deprecation_behaviour if OasAgent::AgentContext.config[:common][:report_ruby_deprecations] == true
+        insert_ruby_deprecation_behaviour if OasAgent::AgentContext.config[:report_ruby_deprecations] == true
         insert_deprecation_behaviour
       end
 

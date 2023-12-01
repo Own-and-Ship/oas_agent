@@ -9,11 +9,9 @@ module OasAgent
       class DefaultSource
         def to_h
           {
-            common: {
-              log_level: :info,
-              report_ruby_deprecations: true,
-              suppress_ruby_warnings: true
-            },
+            log_level: :info,
+            report_ruby_deprecations: true,
+            suppress_ruby_warnings: true,
             api: {
               host: "ownandship.io",
               port: 443,
