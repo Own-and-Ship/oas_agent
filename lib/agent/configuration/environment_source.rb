@@ -11,6 +11,16 @@ module OasAgent
             config[:agent_key] = key
           end
 
+          if ENV["OAS_ADDR"] && ENV["OAS_ADDR"] != ""
+            require "uri"
+            oas_addr = URI.parse(ENV["OAS_ADDR"])
+
+            config[:api] ||= {}
+            config[:api][:host] = oas_addr.host
+            config[:api][:port] = oas_addr.port
+            config[:api][:enforce_tls] = (oas_addr.scheme == "https")
+          end
+
           config
         end
       end
