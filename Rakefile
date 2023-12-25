@@ -19,7 +19,7 @@ end
 SUPPORTED_RUBY_VERSIONS = [
   "1.9.3", "2.0.0",
   "2.1.10", "2.2.10", "2.3.8", "2.4.10", "2.5.9", "2.6.10", "2.7.8",
-  "3.0.6", "3.1.4", "3.2.2", "3.3.0-preview2"
+  "3.0.6", "3.1.4", "3.2.2", "3.3.0"
 ]
 
 desc "Run tests across all Ruby versions in Docker"
@@ -46,14 +46,11 @@ end
 task "docker-compose.yml" => "Rakefile" do
   docker_compose_yml = {
     "version" => "3.8", # Docker engine 19.03.0+
-    "services" => SUPPORTED_RUBY_VERSIONS.each_with_object({}) do |version, services|
-      image_version = version.start_with?("3.3") ? "3.3-rc" : version
+    "services" => SUPPORTED_RUBY_VERSIONS.each_with_object({}) do |image_version, services|
       gemfile = case version
       when "1.9.3", "2.0.0"
         "gemfiles/Gemfile.ruby-#{version}.rb"
-      when /^3\.3/
-        "gemfiles/Gemfile.ruby-3.3.rb"
-      else
+     else
         "gemfiles/Gemfile.ruby-#{version.split(".").first(2).join(".")}.rb"
       end
       services["ruby-#{version.gsub(".", "-")}"] = {
