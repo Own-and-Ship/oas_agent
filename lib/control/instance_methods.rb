@@ -63,6 +63,14 @@ module OasAgent
 
       def insert_deprecation_behaviour
         ActiveSupport::Deprecation.behavior << OasAgent::AgentContext.agent.receiver
+
+        # Rails >= 7.1
+        if Rails.application.respond_to?(:deprecators)
+          # Using deprecators#behavior= overrides existing behaviors, add ourselves instead
+          Rails.application.deprecators.each do |deprecator|
+            deprecator.behavior << OasAgent::AgentContext.agent.receiver
+          end
+        end
       end
 
       def insert_ruby_deprecation_behaviour
