@@ -68,7 +68,11 @@ module OasAgent
           # We need to go through #behavior= to be applied to all existing and future deprecators, but maintain the
           # existing behavior as we did in older versions of rails
           existing_behavior = Rails.application.deprecators.instance_variable_get(:@options)[:behavior]
-          Rails.application.deprecators.behavior = [existing_behavior, OasAgent::AgentContext.agent.receiver]
+          # Rails will raise an error if either of these don't respond correctly so be careful
+          Rails.application.deprecators.behavior = [
+            existing_behavior,
+            OasAgent::AgentContext.agent.receiver
+          ].compact
         else
           # There's only one way to raise deprecations, just hook it
           ActiveSupport::Deprecation.behavior << OasAgent::AgentContext.agent.receiver
