@@ -14,7 +14,7 @@ if defined?(Rails::VERSION)
           # Rails 3+: message, callstack
           # Rails 5.2+: message, callstack, deprecation_horizon, gem_name
           # Rails 7.1+: message, callstack, deprecator
-          oas_agent_listener = -> (message, callback, *args) do
+          oas_agent_listener = lambda do |message, callback, *args|
             OasAgent::AgentContext.agent.receiver.call(message, callback, *args)
           end
 
