@@ -42,7 +42,6 @@ module OasAgent
 
         start_agent
         insert_ruby_deprecation_behaviour if OasAgent::AgentContext.config[:report_ruby_deprecations] == true
-        insert_deprecation_behaviour
       end
 
       private
@@ -59,24 +58,6 @@ module OasAgent
 
       def start_agent
         OasAgent::AgentContext.agent.start
-      end
-
-      def insert_deprecation_behaviour
-        # Rails >= 7.1 has individual deprecators per rails gem, wrapped into a nice collection. We only inject into
-        # those now, anything using the old API will still be emitted.
-        if Rails.application.respond_to?(:deprecators)
-          # We need to go through #behavior= to be applied to all existing and future deprecators, but maintain the
-          # existing behavior as we did in older versions of rails
-          existing_behavior = Rails.application.deprecators.instance_variable_get(:@options)[:behavior]
-          # Rails will raise an error if either of these don't respond correctly so be careful
-          Rails.application.deprecators.behavior = [
-            existing_behavior,
-            OasAgent::AgentContext.agent.receiver
-          ].compact
-        else
-          # There's only one way to raise deprecations, just hook it
-          ActiveSupport::Deprecation.behavior << OasAgent::AgentContext.agent.receiver
-        end
       end
 
       def insert_ruby_deprecation_behaviour
