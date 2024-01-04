@@ -1,14 +1,23 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-require "control/class_methods"
-
 require "agent/agent"
 require "agent/logger"
 require "agent_context"
 
 module OasAgent
   class Control
+    def self.instance
+      @instance ||= new_instance
+    end
+
+    # If we need to deploy to something other than Rails we will determine the
+    # framework here
+    def self.new_instance
+      require "control/frameworks/rails"
+      Frameworks::Rails.new
+    end
+
     attr_writer :env
 
     def init(options={})
