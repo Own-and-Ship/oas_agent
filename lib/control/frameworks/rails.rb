@@ -5,12 +5,19 @@ module OasAgent
   class Control
     module Frameworks
       class Rails < OasAgent::Control
+        # Allow overriding ENV for testing purposes
+        def initialize(_env: ENV)
+          super()
+          @_ENV = env || {}
+          p @_ENV
+        end
+
         def root
           root = rails_root.to_s
           if !root.empty?
             root
           else
-            @root ||= ENV["APP_ROOT"] || "."
+            @root ||= @_ENV["APP_ROOT"] || "."
           end
         end
 
@@ -19,7 +26,7 @@ module OasAgent
         end
 
         def env
-          @env ||= ENV["RAILS_ENV"] || ENV["APP_ENV"] || ENV["RACK_ENV"] || "development"
+          @env ||= @_ENV["RAILS_ENV"] || @_ENV["APP_ENV"] || @_ENV["RACK_ENV"] || "development"
         end
 
         def revision
