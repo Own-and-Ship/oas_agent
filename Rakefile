@@ -86,11 +86,11 @@ namespace :docker do
     end
 
     task "shell_ruby_#{version}" => "build_ruby_#{version}" do
-      sh "docker", "compose", "run", service, "bash"
+      sh "docker", "compose", "run", "--rm", service, "bash"
     end
 
     task "test_ruby_#{version}" => "build_ruby_#{version}" do
-      sh "docker", "compose", "run", service, "bundle", "exec", "rake", "test"
+      sh "docker", "compose", "run", "--rm", service, "bundle", "exec", "rake", "test"
     end
 
     # Shorthand for Ruby 2.1+ (eg, `rake docker:build_ruby_2.1` -> `rake docker:build_ruby_2.1.10`)
