@@ -22,6 +22,9 @@ SUPPORTED_RUBY_VERSIONS = [
   "3.0.7", "3.1.6", "3.2.5", "3.3.4"
 ]
 
+desc "Build all ruby version Docker images"
+multitask "build:all" => SUPPORTED_RUBY_VERSIONS.map { |version| "docker:build_ruby_#{version}" }
+
 desc "Run tests across all Ruby versions in Docker"
 task "test:all" do
   require "thread"
@@ -45,7 +48,6 @@ end
 
 task "docker-compose.yml" => "Rakefile" do
   docker_compose_yml = {
-    "version" => "3.8", # Docker engine 19.03.0+
     "services" => SUPPORTED_RUBY_VERSIONS.each_with_object({}) do |version, services|
       gemfile = case version
       when "1.9.3", "2.0.0"
@@ -87,11 +89,11 @@ namespace :docker do
     end
 
     task "shell_ruby_#{version}" => "build_ruby_#{version}" do
-      sh "docker", "compose", "run", service, "bash"
+      sh "docker", "compose", "run", "--rm", service, "bash"
     end
 
     task "test_ruby_#{version}" => "build_ruby_#{version}" do
-      sh "docker", "compose", "run", service, "bundle", "exec", "rake", "test"
+      sh "docker", "compose", "run", "--rm", service, "bundle", "exec", "rake", "test"
     end
 
     # Shorthand for Ruby 2.1+ (eg, `rake docker:build_ruby_2.1` -> `rake docker:build_ruby_2.1.10`)
