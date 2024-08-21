@@ -92,42 +92,42 @@ services:
     volumes:
     - ".:/app"
     working_dir: "/app"
-  ruby-3-0-6:
+  ruby-3-0-7:
     build:
       context: "."
       dockerfile: Dockerfile
       args:
-        RUBY_VERSION: 3.0.6
+        RUBY_VERSION: 3.0.7
         BUNDLE_GEMFILE: gemfiles/Gemfile.ruby-3.0.rb
     volumes:
     - ".:/app"
     working_dir: "/app"
-  ruby-3-1-4:
+  ruby-3-1-6:
     build:
       context: "."
       dockerfile: Dockerfile
       args:
-        RUBY_VERSION: 3.1.4
+        RUBY_VERSION: 3.1.6
         BUNDLE_GEMFILE: gemfiles/Gemfile.ruby-3.1.rb
     volumes:
     - ".:/app"
     working_dir: "/app"
-  ruby-3-2-2:
+  ruby-3-2-5:
     build:
       context: "."
       dockerfile: Dockerfile
       args:
-        RUBY_VERSION: 3.2.2
+        RUBY_VERSION: 3.2.5
         BUNDLE_GEMFILE: gemfiles/Gemfile.ruby-3.2.rb
     volumes:
     - ".:/app"
     working_dir: "/app"
-  ruby-3-3-0:
+  ruby-3-3-4:
     build:
       context: "."
       dockerfile: Dockerfile
       args:
-        RUBY_VERSION: 3.3.0
+        RUBY_VERSION: 3.3.4
         BUNDLE_GEMFILE: gemfiles/Gemfile.ruby-3.3.rb
     volumes:
     - ".:/app"
