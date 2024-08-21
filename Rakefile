@@ -22,6 +22,9 @@ SUPPORTED_RUBY_VERSIONS = [
   "3.0.7", "3.1.6", "3.2.5", "3.3.4"
 ]
 
+desc "Build all ruby version Docker images"
+multitask "build:all" => SUPPORTED_RUBY_VERSIONS.map { |version| "docker:build_ruby_#{version}" }
+
 desc "Run tests across all Ruby versions in Docker"
 task "test:all" do
   require "thread"
