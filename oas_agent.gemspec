@@ -34,6 +34,11 @@ Gem::Specification.new do |spec|
   # the environment the gem is runnign in.
   spec.add_dependency "msgpack"
 
+  # Older rubies shipped these in stdlib, newer ones need the dependency
+  if "3.3.0" <= RUBY_VERSION
+    spec.add_dependency "base64"
+  end
+
   # Development dependencies must be version specced to work from Ruby 1.9.3 up to Ruby head
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
