@@ -9,9 +9,9 @@ GEM
   remote: https://rubygems.org/
   specs:
     base64 (0.2.0)
-    minitest (5.20.0)
+    minitest (5.25.1)
     msgpack (1.7.2)
-    rake (13.1.0)
+    rake (13.2.1)
 
 PLATFORMS
   aarch64-linux
