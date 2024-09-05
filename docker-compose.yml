@@ -121,12 +121,12 @@ services:
     volumes:
     - ".:/app"
     working_dir: "/app"
-  ruby-3-3-4:
+  ruby-3-3-5:
     build:
       context: "."
       dockerfile: Dockerfile
       args:
-        RUBY_VERSION: 3.3.4
+        RUBY_VERSION: 3.3.5
         BUNDLE_GEMFILE: gemfiles/Gemfile.ruby-3.3.rb
     volumes:
     - ".:/app"
