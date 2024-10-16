@@ -18,16 +18,18 @@ module OasAgent
 
         @rails_env = Rails.env
         @rails_root = Rails.root.expand_path.to_s
-        Thread.current.thread_variable_set :report_queue, SizedQueue.new(OasAgent::AgentContext.config[:reporter][:max_reports_to_queue])
+        @report_queue = SizedQueue.new(OasAgent::AgentContext.config[:reporter][:max_reports_to_queue])
+        # Thread.current.thread_variable_set(:report_queue, SizedQueue.new(OasAgent::AgentContext.config[:reporter][:max_reports_to_queue]))
 
         # Reporter thread must be created last as it requires data created previously
-        Thread.current.thread_variable_set(:reporter_thread, create_reporter_thread) unless OasAgent::AgentContext.config[:reporter][:send_immediately]
+        @reporter_thread = create_reporter_thread(@report_queue)
+        # Thread.current.thread_variable_set(:reporter_thread, create_reporter_thread(Thread.current.thread_variable_get(:report_queue))) unless OasAgent::AgentContext.config[:reporter][:send_immediately]
       end
 
       # @param data [Object]
       # @param non_block [Boolean] Whether to block if the queue is full
       def push(data, non_block = true)
-        Thread.current.thread_variables[:report_queue].push(data, non_block)
+        @report_queue.push(data, non_block)
 
         if OasAgent::AgentContext.config[:reporter][:send_immediately]
           receive_reports_from_queue
@@ -40,27 +42,28 @@ module OasAgent
       # The agent batches reports and sends them when we have reached either the
       # maximum number of reports to send in one batch, or the maximum time has
       # passed between reports, whichever happens first.
-      def create_reporter_thread
+      def create_reporter_thread(q)
         OasAgent::AgentContext.logger.debug("Creating reporter thread")
 
         report_thread = Thread.new do
+          Thread.current.thread_variable_set(:report_queue, q)
           OasAgent::AgentContext.logger.debug("Reporter thread booted")
           loop do
-            break if Thread.current.thread_variables[:report_queue].closed?
+            break if Thread.current.thread_variable_get(:report_queue).closed?
             receive_reports_from_queue
             send_report_batch unless @event_cache.num_events.zero?
-            puts "‼️ (#{$$}) #{Thread.current.thread_variables[:report_queue].pop.inspect}"
+            puts "‼️ (#{$$}) #{Thread.current.thread_variable_get(:report_queue).size.inspect}"
           end
           OasAgent::AgentContext.logger.debug("Reporter thread loop finished")
         end
 
         at_exit do
           OasAgent::AgentContext.logger.debug("Reporter thread at_exit block called")
-          Thread.current.thread_variables[:report_queue].close
+          Thread.current.thread_variable_get(:report_queue).close
           begin
             Timeout.timeout(1) { report_thread.join }
           rescue Timeout::Error
-            OasAgent::AgentContext.logger.warn("Timeout joining report thread during shutdown, report_queue is closed? #{Thread.current.thread_variables[:report_queue].closed?}")
+            OasAgent::AgentContext.logger.warn("Timeout joining report thread during shutdown, report_queue is closed? #{Thread.current.thread_variable_get(:report_queue).closed?}")
           end
         end
       end
@@ -72,8 +75,8 @@ module OasAgent
         # looping over an empty reports to send list and throwing a timeout
         # exception every @batched_report_timeout seconds when there are no
         # reports to send.
-        report = Thread.current.thread_variables[:report_queue].pop
-        return if Thread.current.thread_variables[:report_queue].closed?
+        report = Thread.current.thread_variable_get(:report_queue).pop
+        return if Thread.current.thread_variable_get(:report_queue).closed?
 
         @event_cache.add_event(report[:message], report[:type], report[:version], report[:callstack]) unless report.nil?
 
@@ -81,8 +84,8 @@ module OasAgent
         # is no point setting a delivery timeout on nothing
         Timeout::timeout(OasAgent::AgentContext.config[:reporter][:batched_report_timeout]) do
           while @event_cache.num_events < OasAgent::AgentContext.config[:reporter][:max_reports_to_batch] do
-            report = Thread.current.thread_variables[:report_queue].pop
-            return if Thread.current.thread_variables[:report_queue].closed?
+            report = Thread.current.thread_variable_get(:report_queue).pop
+            return if Thread.current.thread_variable_get(:report_queue).closed?
             p "‼️ (#{$$}) EVENT: #{report.inspect}"
             @event_cache.add_event(report[:message], report[:type], report[:version], report[:callstack])
           end
