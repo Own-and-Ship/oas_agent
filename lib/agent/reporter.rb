@@ -22,14 +22,6 @@ module OasAgent
 
         # Reporter thread must be created last as it requires data created previously
         @reporter_thread = create_reporter_thread unless OasAgent::AgentContext.config[:reporter][:send_immediately]
-
-        @counting_thread = Thread.new do
-          loop do
-            break if @report_queue.closed?
-            sleep 1
-            puts "[#{$$}] Counting: #{@report_queue.size}"
-          end
-        end
       end
 
       # @param data [Object]
@@ -66,7 +58,6 @@ module OasAgent
           @report_queue.close
           begin
             Timeout.timeout(1) { report_thread.join }
-            Timeout.timeout(1) { @counting_thread.join }
           rescue Timeout::Error
             OasAgent::AgentContext.logger.warn("Timeout joining report thread during shutdown, report_queue is closed? #{@report_queue.closed?}")
           end
