@@ -14,7 +14,7 @@ module OasAgent
 
       # Create a new agent and start the reporter thread.
       def initialize
-        OasAgent::AgentContext.logger.debug("Reporter being initialized")
+        OasAgent::AgentContext.logger.info("Reporter being initialized")
 
         @rails_env = Rails.env
         @rails_root = Rails.root.expand_path.to_s
@@ -49,20 +49,20 @@ module OasAgent
       # maximum number of reports to send in one batch, or the maximum time has
       # passed between reports, whichever happens first.
       def create_reporter_thread
-        OasAgent::AgentContext.logger.debug("Creating reporter thread")
+        OasAgent::AgentContext.logger.info("Creating reporter thread")
 
         report_thread = Thread.new do
-          OasAgent::AgentContext.logger.debug("Reporter thread booted")
+          OasAgent::AgentContext.logger.info("Reporter thread booted")
           loop do
             break if @report_queue.closed?
             receive_reports_from_queue
             send_report_batch unless @event_cache.num_events.zero?
           end
-          OasAgent::AgentContext.logger.debug("Reporter thread loop finished")
+          OasAgent::AgentContext.logger.info("Reporter thread loop finished")
         end
 
         at_exit do
-          OasAgent::AgentContext.logger.debug("Reporter thread at_exit block called")
+          OasAgent::AgentContext.logger.info("Reporter thread at_exit block called")
           @report_queue.close
           begin
             Timeout.timeout(1) { report_thread.join }
