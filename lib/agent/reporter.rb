@@ -33,6 +33,14 @@ module OasAgent
         end
       end
 
+      # Expects to be called after a process has forked to restart now-dead thread
+      def restart
+        self.class.instance_variable_get(:@singleton__mutex__).synchronize do
+          @reporter_thread.kill if @reporter_thread.alive?
+          @reporter_thread = create_reporter_thread
+        end
+      end
+
       private
 
       # The agent batches reports and sends them when we have reached either the
