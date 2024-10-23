@@ -20,6 +20,8 @@ module OasAgent
 
         # Reporter thread must be created last as it requires data created previously
         @reporter_thread = create_reporter_thread unless OasAgent::AgentContext.config[:reporter][:send_immediately]
+
+        at_exit { close }
       end
 
       # @param data [Object]
@@ -30,6 +32,20 @@ module OasAgent
         if OasAgent::AgentContext.config[:reporter][:send_immediately]
           receive_reports_from_queue
           send_report_batch
+        end
+      end
+
+      # Closes down reporter
+      # Attempts to shutdown gracefully, but will force close if it takes too long
+      def close
+        self.class.instance_variable_get(:@singleton__mutex__).synchronize do
+          @report_queue.close
+
+          begin
+            Timeout.timeout(1) { @reporter_thread.join }
+          rescue Timeout::Error
+            OasAgent::AgentContext.logger.warn("Timeout joining report thread during shutdown")
+          end
         end
       end
 
@@ -47,20 +63,11 @@ module OasAgent
       # maximum number of reports to send in one batch, or the maximum time has
       # passed between reports, whichever happens first.
       def create_reporter_thread
-        report_thread = Thread.new do
+        Thread.new do
           loop do
             break if @report_queue.closed?
             receive_reports_from_queue
             send_report_batch unless @event_cache.num_events.zero?
-          end
-        end
-
-        at_exit do
-          @report_queue.close
-          begin
-            Timeout.timeout(1) { report_thread.join }
-          rescue Timeout::Error
-            OasAgent::AgentContext.logger.warn("Timeout joining report thread during shutdown, report_queue is closed? #{@report_queue.closed?}")
           end
         end
       end
