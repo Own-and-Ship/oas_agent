@@ -17,6 +17,7 @@ module OasAgent
         @rails_env = Rails.env
         @rails_root = Rails.root.expand_path.to_s
         @report_queue = SizedQueue.new(OasAgent::AgentContext.config[:reporter][:max_reports_to_queue])
+        @pid = Process.pid
 
         # Reporter thread must be created last as it requires data created previously
         @reporter_thread = create_reporter_thread unless OasAgent::AgentContext.config[:reporter][:send_immediately]
@@ -27,6 +28,14 @@ module OasAgent
       # @param data [Object]
       # @param non_block [Boolean] Whether to block if the queue is full
       def push(data, non_block = true)
+        unless OasAgent::AgentContext.config[:reporter][:send_immediately]
+          if @pid != Process.pid
+            OasAgent::AgentContext.logger.warn("Fork detected (#{@pid} -> #{Process.pid}), restarting reporter thread")
+            restart
+            @pid = Process.pid
+          end
+        end
+
         @report_queue.push(data, non_block)
 
         if OasAgent::AgentContext.config[:reporter][:send_immediately]
