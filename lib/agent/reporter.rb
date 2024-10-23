@@ -21,19 +21,22 @@ module OasAgent
 
         # Reporter thread must be created last as it requires data created previously
         @reporter_thread = start_reporter_thread_if_needed
+        @reporter_thread_creation_lock = Mutex.new
       end
 
       # @param data [Object]
       # @param non_block [Boolean] Whether to block if the queue is full
       def push(data, non_block = true)
-        if Process.pid != @pid
-          puts "Restarting the reporter thread, process pid #{Process.pid} differs from the pid at startup (#@pid) fork detected"
-          @reporter_thread.kill
-          @pid = Process.pid
-          @reporter_thread = start_reporter_thread_if_needed
-        elsif !@reporter_thread.alive?
-          puts "Restarting the reporter thread, the reporter thread was dead"
-          @reporter_thread = start_reporter_thread_if_needed
+        @reporter_thread_creation_lock.synchronize do
+          if Process.pid != @pid
+            puts "Restarting the reporter thread, process pid #{Process.pid} differs from the pid at startup (#@pid) fork detected"
+            @reporter_thread.kill
+            @pid = Process.pid
+            @reporter_thread = start_reporter_thread_if_needed
+          elsif !@reporter_thread.alive?
+            puts "Restarting the reporter thread, the reporter thread was dead"
+            @reporter_thread = start_reporter_thread_if_needed
+          end
         end
         @report_queue.push(data, non_block)
         Thread.pass
