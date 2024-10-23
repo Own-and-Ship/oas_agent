@@ -38,6 +38,8 @@ Gem::Specification.new do |spec|
   # Older rubies shipped these in stdlib, newer ones need the dependency
   if "3.3.0" <= RUBY_VERSION
     spec.add_dependency "base64"
+    spec.add_dependency "logger"
+    spec.add_dependency "ostruct"
   end
 
   # Development dependencies must be version specced to work from Ruby 1.9.3 up to Ruby head
