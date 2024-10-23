@@ -1,4 +1,5 @@
 require "test_helper"
+require "ostruct"
 require "support/mock_rails"
 
 class RailtieTest < Minitest::Test
