@@ -36,6 +36,7 @@ module OasAgent
           @reporter_thread = start_reporter_thread_if_needed
         end
         @report_queue.push(data, non_block)
+        Thread.pass
 
         if OasAgent::AgentContext.config[:reporter][:send_immediately]
           receive_reports_from_queue
@@ -60,6 +61,7 @@ module OasAgent
             send_report_batch unless @event_cache.num_events.zero?
           end
         end
+        report_thread.priority = 255
 
         at_exit do
           @report_queue.close
