@@ -28,11 +28,13 @@ module OasAgent
       # @param data [Object]
       # @param non_block [Boolean] Whether to block if the queue is full
       def push(data, non_block = true)
-        unless OasAgent::AgentContext.config[:reporter][:send_immediately]
+        if @reporter_thread
           if @pid != Process.pid
             OasAgent::AgentContext.logger.warn("Fork detected (#{@pid} -> #{Process.pid}), restarting reporter thread")
             restart
-            @pid = Process.pid
+          elsif !@reporter_thread.alive?
+            OasAgent::AgentContext.logger.warn("Reporter thread not alive, restarting reporter thread")
+            restart
           end
         end
 
@@ -63,6 +65,9 @@ module OasAgent
         self.class.instance_variable_get(:@singleton__mutex__).synchronize do
           @reporter_thread.kill if @reporter_thread.alive?
           @reporter_thread = create_reporter_thread
+
+          # Update in case of forked process
+          @pid = Process.pid
         end
       end
 
