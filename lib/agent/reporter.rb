@@ -31,6 +31,9 @@ module OasAgent
           @reporter_thread.kill
           @pid = Process.pid
           @reporter_thread = start_reporter_thread_if_needed
+        elsif !@reporter_thread.alive?
+          puts "Restarting the reporter thread, the reporter thread was dead"
+          @reporter_thread = start_reporter_thread_if_needed
         end
         @report_queue.push(data, non_block)
 
