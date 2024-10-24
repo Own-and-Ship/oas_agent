@@ -17,19 +17,57 @@ module OasAgent
         @rails_env = Rails.env
         @rails_root = Rails.root.expand_path.to_s
         @report_queue = SizedQueue.new(OasAgent::AgentContext.config[:reporter][:max_reports_to_queue])
+        @pid = Process.pid
 
         # Reporter thread must be created last as it requires data created previously
         @reporter_thread = create_reporter_thread unless OasAgent::AgentContext.config[:reporter][:send_immediately]
+
+        at_exit { close }
       end
 
       # @param data [Object]
       # @param non_block [Boolean] Whether to block if the queue is full
       def push(data, non_block = true)
+        if @reporter_thread
+          if @pid != Process.pid
+            OasAgent::AgentContext.logger.warn("Fork detected (#{@pid} -> #{Process.pid}), restarting reporter thread")
+            restart
+          elsif !@reporter_thread.alive?
+            OasAgent::AgentContext.logger.warn("Reporter thread not alive, restarting reporter thread")
+            restart
+          end
+        end
+
         @report_queue.push(data, non_block)
 
         if OasAgent::AgentContext.config[:reporter][:send_immediately]
           receive_reports_from_queue
           send_report_batch
+        end
+      end
+
+      # Closes down reporter
+      # Attempts to shutdown gracefully, but will force close if it takes too long
+      def close
+        self.class.instance_variable_get(:@singleton__mutex__).synchronize do
+          @report_queue.close
+
+          begin
+            Timeout.timeout(1) { @reporter_thread.join }
+          rescue Timeout::Error
+            OasAgent::AgentContext.logger.warn("Timeout joining report thread during shutdown")
+          end
+        end
+      end
+
+      # Expects to be called after a process has forked to restart now-dead thread
+      def restart
+        self.class.instance_variable_get(:@singleton__mutex__).synchronize do
+          @reporter_thread.kill if @reporter_thread.alive?
+          @reporter_thread = create_reporter_thread
+
+          # Update in case of forked process
+          @pid = Process.pid
         end
       end
 
@@ -39,20 +77,11 @@ module OasAgent
       # maximum number of reports to send in one batch, or the maximum time has
       # passed between reports, whichever happens first.
       def create_reporter_thread
-        report_thread = Thread.new do
+        Thread.new do
           loop do
             break if @report_queue.closed?
             receive_reports_from_queue
             send_report_batch unless @event_cache.num_events.zero?
-          end
-        end
-
-        at_exit do
-          @report_queue.close
-          begin
-            Timeout.timeout(1) { report_thread.join }
-          rescue Timeout::Error
-            OasAgent::AgentContext.logger.warn("Timeout joining report thread during shutdown, report_queue is closed? #{@report_queue.closed?}")
           end
         end
       end

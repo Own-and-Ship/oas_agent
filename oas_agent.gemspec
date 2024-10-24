@@ -33,10 +33,13 @@ Gem::Specification.new do |spec|
   # unknown Ruby version we can't pin the version here as it could conflict with
   # the environment the gem is runnign in.
   spec.add_dependency "msgpack"
+  spec.add_dependency "activesupport", ">= 4.0.0.beta1"
 
   # Older rubies shipped these in stdlib, newer ones need the dependency
   if "3.3.0" <= RUBY_VERSION
     spec.add_dependency "base64"
+    spec.add_dependency "logger"
+    spec.add_dependency "ostruct"
   end
 
   # Development dependencies must be version specced to work from Ruby 1.9.3 up to Ruby head
