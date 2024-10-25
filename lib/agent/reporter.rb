@@ -20,24 +20,15 @@ module OasAgent
         @pid = Process.pid
 
         # Reporter thread must be created last as it requires data created previously
-        @reporter_thread = start_reporter_thread_if_needed
+        @reporter_thread = create_reporter_thread unless OasAgent::AgentContext.config[:reporter][:send_immediately]
         @reporter_thread_creation_lock = Mutex.new
       end
 
       # @param data [Object]
       # @param non_block [Boolean] Whether to block if the queue is full
       def push(data, non_block = true)
-        @reporter_thread_creation_lock.synchronize do
-          if Process.pid != @pid
-            puts "Restarting the reporter thread, process pid #{Process.pid} differs from the pid at startup (#@pid) fork detected"
-            @reporter_thread.kill
-            @pid = Process.pid
-            @reporter_thread = start_reporter_thread_if_needed
-          elsif !@reporter_thread.alive?
-            puts "Restarting the reporter thread, the reporter thread was dead"
-            @reporter_thread = start_reporter_thread_if_needed
-          end
-        end
+        restart_reporter_thread_if_needed
+
         @report_queue.push(data, non_block)
         Thread.pass
 
@@ -49,8 +40,22 @@ module OasAgent
 
       private
 
-      def start_reporter_thread_if_needed
-        create_reporter_thread unless OasAgent::AgentContext.config[:reporter][:send_immediately]
+      def restart_reporter_thread_if_needed
+        # There is no reporter thread when :send_immediately is set so we don't
+        # need to restart it.
+        return if OasAgent::AgentContext.config[:reporter][:send_immediately]
+
+        @reporter_thread_creation_lock.synchronize do
+          if Process.pid != @pid
+            puts "Restarting the reporter thread, process pid #{Process.pid} differs from the pid at startup (#@pid) fork detected"
+            @reporter_thread.kill
+            @pid = Process.pid
+            @reporter_thread = create_reporter_thread
+          elsif !@reporter_thread.alive?
+            puts "Restarting the reporter thread, the reporter thread was dead"
+            @reporter_thread = create_reporter_thread
+          end
+        end
       end
 
       # The agent batches reports and sends them when we have reached either the
