@@ -30,7 +30,6 @@ module OasAgent
         restart_reporter_thread_if_needed
 
         @report_queue.push(data, non_block)
-        Thread.pass
 
         if OasAgent::AgentContext.config[:reporter][:send_immediately]
           receive_reports_from_queue
