@@ -64,7 +64,6 @@ module OasAgent
             send_report_batch unless @event_cache.num_events.zero?
           end
         end
-        report_thread.priority = 255
 
         at_exit do
           @report_queue.close
