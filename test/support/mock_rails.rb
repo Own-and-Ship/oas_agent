@@ -47,6 +47,6 @@ module MockRails
   end
 
   def root
-    Pathname.new(__dir__).join("..", "tmp").expand_path
+    Pathname.new(__FILE__).dirname.join("..", "tmp").expand_path
   end
 end
