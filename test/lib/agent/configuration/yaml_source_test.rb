@@ -3,7 +3,7 @@
 
 require "test_helper"
 
-class OasAgentRubyConfigurationYamlSourceTest < Minitest::Test
+class OasAgentAgentConfigurationYamlSourceTest < Minitest::Test
   def test_loads_config_for_and_environment_including_aliases
     log = StringIO.new
     config = OasAgent::Agent::Configuration::YamlSource.new(

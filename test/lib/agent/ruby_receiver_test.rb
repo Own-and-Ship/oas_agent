@@ -3,7 +3,7 @@
 require "test_helper"
 require "agent/agent"
 
-class OasAgentRubyReceiverTest < Minitest::Test
+class OasAgentAgentRubyReceiverTest < Minitest::Test
   def test_leaves_messages_it_doesnt_recognise_unchanged
     fake_reporter = []
     r = OasAgent::Agent::RubyReceiver.new(fake_reporter, "/a/b/c")

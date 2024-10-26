@@ -4,7 +4,7 @@
 require "test_helper"
 require "agent/agent"
 
-class OasAgentRubyEventsCacheTest < Minitest::Test
+class OasAgentAgentEventsCacheTest < Minitest::Test
   def deserialize_event_cache(event_data)
     MessagePack.unpack(
       Zlib::Inflate.inflate(

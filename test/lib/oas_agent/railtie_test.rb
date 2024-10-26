@@ -2,7 +2,7 @@ require "test_helper"
 require "ostruct"
 require "support/mock_rails"
 
-class RailtieTest < Minitest::Test
+class OasAgentRailtieTest < Minitest::Test
   def setup
     # Stub it out and make sure it's reset before each test
     Object.const_set(:Rails, MockRails)

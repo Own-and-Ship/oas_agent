@@ -4,7 +4,7 @@
 require "test_helper"
 require "agent/agent"
 
-class OasAgentRubyEventCacheTest < Minitest::Test
+class OasAgentAgentEventCacheTest < Minitest::Test
   def test_starts_the_count_at_0
     event = OasAgent::Agent::EventCache.new("fakehash", "Some deprecation message", "Ruby", "version 1", ["a", "b"], "/some/root")
 
