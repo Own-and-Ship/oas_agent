@@ -7,7 +7,9 @@ module OasAgent
       class EnvironmentSource
         def to_h
           config = {}
-          config[:agent_key] = ENV["OAS_AGENT_KEY"] unless ENV["OAS_AGENT_KEY"].blank?
+          if (key = ENV["OAS_AGENT_KEY"]) && key != ""
+            config[:agent_key] = key
+          end
 
           config
         end
