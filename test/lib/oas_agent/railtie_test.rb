@@ -1,29 +1,8 @@
 require "test_helper"
+require "ostruct"
+require "support/mock_rails"
 
 class RailtieTest < Minitest::Test
-  # Our only goal here is to let the railtie load & call `.initializer` where we can access it
-  module MockRails
-    module VERSION
-      MAJOR = 7
-    end
-
-    class Railtie
-      def self.initializer(name, options = {}, &block)
-        MockRails.initializers[name] = {options: options, block: block}
-      end
-    end
-
-    module_function
-
-    def initializers
-      @initializers ||= {}
-    end
-
-    def reset
-      @initializers = nil
-    end
-  end
-
   def setup
     # Stub it out and make sure it's reset before each test
     Object.const_set(:Rails, MockRails)

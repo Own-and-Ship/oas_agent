@@ -18,7 +18,25 @@ module OasAgent
         end
 
         def integrate(config)
-          @config.deep_merge!(config.deep_symbolize_keys)
+          @config = deep_merge(@config, deep_symbolize(config))
+        end
+
+        def deep_merge(left, right)
+          left.merge(right) do |key, left_val, right_val|
+            if left_val.is_a?(Hash) && right_val.is_a?(Hash)
+              deep_merge(left_val, right_val)
+            else
+              right_val
+            end
+          end
+        end
+
+        def deep_symbolize(hash)
+          hash.each_with_object({}) do |(key, val), new_hash|
+            new_key = key.respond_to?(:to_sym) ? key.to_sym : key
+            new_val = val.is_a?(Hash) ? deep_symbolize(val) : val
+            new_hash[new_key] = new_val
+          end
         end
       end
     end
