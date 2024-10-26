@@ -1,9 +1,15 @@
+require:
+  - "rubocop-minitest"
+
 AllCops:
   TargetRubyVersion: 2.0
   DisabledByDefault: true
   SuggestExtensions: false
 
 Bundler:
+  Enabled: true
+
+Minitest:
   Enabled: true
 
 Layout/TrailingEmptyLines:

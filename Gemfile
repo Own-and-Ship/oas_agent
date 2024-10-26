@@ -10,4 +10,5 @@ gemspec
 # would be redundant.
 group :lint do
   gem "rubocop"
+  gem "rubocop-minitest"
 end
