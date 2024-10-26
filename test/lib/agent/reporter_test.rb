@@ -37,7 +37,9 @@ class OasAgentAgentReporterTest < Minitest::Test
 
     TestReporter.instance.close
 
-    assert queue.closed?, "Reporter report queue should be closed"
+    if queue.respond_to?(:closed)
+      assert queue.closed?, "Reporter report queue should be closed"
+    end
     refute thread.alive?, "Reporter thread should not be alive"
   end
 
@@ -64,7 +66,10 @@ class OasAgentAgentReporterTest < Minitest::Test
     TestReporter.instance.close
 
     assert_equal [[:warn, "Timeout joining report thread during shutdown"]], OasAgent::AgentContext.logger.messages
-    assert TestReporter.instance.instance_variable_get(:@report_queue).closed?, "Reporter report queue should be closed"
+    q = TestReporter.instance.instance_variable_get(:@report_queue)
+    if q.respond_to?(:closed)
+      assert q.closed?, "Reporter report queue should be closed"
+    end
 
     slow_thread.kill
   end

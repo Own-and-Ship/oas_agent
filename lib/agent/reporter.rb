@@ -12,6 +12,9 @@ module OasAgent
     class Reporter
       include Singleton
 
+      # Used for older rubies before SizedQueue#close was introduced
+      QUEUE_CLOSED = Object.new
+
       # Create a new agent and start the reporter thread.
       def initialize
         @rails_env = Rails.env
@@ -50,7 +53,11 @@ module OasAgent
       # Attempts to shutdown gracefully, but will force close if it takes too long
       def close
         self.class.instance_variable_get(:@singleton__mutex__).synchronize do
-          @report_queue.close
+          if @report_queue.respond_to?(:close)
+            @report_queue.close
+          else
+            @report_queue.push QUEUE_CLOSED
+          end
 
           begin
             Timeout.timeout(1) { @reporter_thread.join }
@@ -79,7 +86,7 @@ module OasAgent
       def create_reporter_thread
         Thread.new do
           loop do
-            break if @report_queue.closed?
+            break if @report_queue.respond_to?(:closed?) && @report_queue.closed?
             receive_reports_from_queue
             send_report_batch unless @event_cache.num_events.zero?
           end
@@ -94,7 +101,12 @@ module OasAgent
         # exception every @batched_report_timeout seconds when there are no
         # reports to send.
         report = @report_queue.pop
-        return if @report_queue.closed?
+        if @report_queue.respond_to?(:closed?)
+          return if @report_queue.closed?
+        else
+          # This breaks out of the loop in create_reporter_thread in old rubies
+          raise StopIteration if report == QUEUE_CLOSED
+        end
 
         @event_cache.add_event(report[:message], report[:type], report[:version], report[:callstack]) unless report.nil?
 
