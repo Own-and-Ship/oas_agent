@@ -7,12 +7,14 @@ require "agent/agent"
 class OasAgentRubyEventCacheTest < Minitest::Test
   def test_starts_the_count_at_0
     event = OasAgent::Agent::EventCache.new("fakehash", "Some deprecation message", "Ruby", "version 1", ["a", "b"], "/some/root")
+
     assert_equal 0, event.for_serialization[OasAgent::Agent::EventCache::DATA_INDEXES[:counts]]
   end
 
   def test_events_can_be_incremented
     event = OasAgent::Agent::EventCache.new("fakehash", "Some deprecation message", "Ruby", "9000", ["a", "b"], "/some/root")
     10.times { event.increment }
+
     assert_equal 10, event.for_serialization[OasAgent::Agent::EventCache::DATA_INDEXES[:counts]]
   end
 
@@ -20,6 +22,7 @@ class OasAgentRubyEventCacheTest < Minitest::Test
     event = OasAgent::Agent::EventCache.new("fakehash", "Some deprecation message", "Ruby", "9000", ["a", "b"], "/some/root")
     event.increment
     expected = ["fakehash", "Some deprecation message", "Ruby", ["a", "b"], "9000", "/some/root", 1 ]
+
     assert_equal expected, event.for_serialization
   end
 

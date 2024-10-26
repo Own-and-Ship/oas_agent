@@ -17,6 +17,7 @@ class OasAgentRubyEventsCacheTest < Minitest::Test
     event_cache = OasAgent::Agent::EventsCache.new("/some/root")
     event_cache.add_event("Some deprecation message", "Ruby", "9000", ["a", "b"])
     event_cache.add_event("Some deprecation message", "Ruby", "9000", ["a", "b"])
+
     assert_equal 2, deserialize_event_cache(event_cache.serializable).first[OasAgent::Agent::EventCache::DATA_INDEXES[:counts]]
   end
 
