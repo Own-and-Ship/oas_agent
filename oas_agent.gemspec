@@ -38,6 +38,10 @@ Gem::Specification.new do |spec|
   if "3.3.0" <= RUBY_VERSION
     spec.add_dependency "base64"
   end
+  if "3.4.0" <= RUBY_VERSION
+    spec.add_dependency "logger"
+    spec.add_dependency "ostruct"
+  end
 
   # Development dependencies must be version specced to work from Ruby 1.9.3 up to Ruby head
   spec.add_development_dependency "bundler"
