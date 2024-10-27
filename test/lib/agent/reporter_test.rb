@@ -73,4 +73,31 @@ class OasAgentAgentReporterTest < Minitest::Test
 
     slow_thread.kill
   end
+
+  def test_no_background_thread_when_send_immediately
+    OasAgent::AgentContext.config.integrate({reporter: {send_immediately: true}})
+
+    TestReporter.instance
+    assert_nil TestReporter.instance.instance_variable_get(:@reporter_thread)
+  end
+
+  def test_close_with_send_immediately
+    OasAgent::AgentContext.config.integrate({reporter: {send_immediately: true}})
+
+    TestReporter.instance.close
+
+    assert_nil TestReporter.instance.instance_variable_get(:@reporter_thread)
+    q = TestReporter.instance.instance_variable_get(:@report_queue)
+    if q.respond_to?(:closed)
+      assert q.closed?, "Reporter report queue should be closed"
+    end
+  end
+
+  def test_restart_with_send_immediately
+    OasAgent::AgentContext.config.integrate({reporter: {send_immediately: true}})
+
+    TestReporter.instance.restart
+
+    assert_nil TestReporter.instance.instance_variable_get(:@reporter_thread)
+  end
 end

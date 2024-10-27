@@ -60,7 +60,7 @@ module OasAgent
           end
 
           begin
-            Timeout.timeout(1) { @reporter_thread.join }
+            Timeout.timeout(1) { @reporter_thread.join if @reporter_thread }
           rescue Timeout::Error
             OasAgent::AgentContext.logger.warn("Timeout joining report thread during shutdown")
           end
@@ -70,8 +70,10 @@ module OasAgent
       # Expects to be called after a process has forked to restart now-dead thread
       def restart
         self.class.instance_variable_get(:@singleton__mutex__).synchronize do
-          @reporter_thread.kill if @reporter_thread.alive?
-          @reporter_thread = create_reporter_thread
+          unless OasAgent::AgentContext.config[:reporter][:send_immediately]
+            @reporter_thread.kill if @reporter_thread.alive?
+            @reporter_thread = create_reporter_thread
+          end
 
           # Update in case of forked process
           @pid = Process.pid
