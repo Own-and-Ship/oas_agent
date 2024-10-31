@@ -22,7 +22,7 @@ RSpec::Core::RakeTask.new(:spec)
 SUPPORTED_RUBY_VERSIONS = [
   "1.9.3", "2.0.0",
   "2.1.10", "2.2.10", "2.3.8", "2.4.10", "2.5.9", "2.6.10", "2.7.8",
-  "3.0.7", "3.1.6", "3.2.5", "3.3.5"
+  "3.0.7", "3.1.6", "3.2.5", "3.3.5", "3.4.0-preview2"
 ]
 
 desc "Build all ruby version Docker images"
