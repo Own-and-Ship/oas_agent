@@ -5,6 +5,7 @@
 
 require "bundler/gem_tasks"
 require "rake/testtask"
+require "rspec/core/rake_task"
 require "json"
 require "yaml"
 
@@ -15,6 +16,8 @@ Rake::TestTask.new(:test) do |t|
   t.libs << "lib"
   t.test_files = FileList["test/**/*_test.rb"]
 end
+
+RSpec::Core::RakeTask.new(:spec)
 
 SUPPORTED_RUBY_VERSIONS = [
   "1.9.3", "2.0.0",
