@@ -40,3 +40,4 @@ jobs:
           bundler-cache: false
       - run: bundle --jobs 8 --retry 3
       - run: bundle exec rake test
+      - run: bundle exec rake spec

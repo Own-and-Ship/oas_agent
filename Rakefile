@@ -39,7 +39,7 @@ task "test:all" do
   # Run tests in parallel
   threads = SUPPORTED_RUBY_VERSIONS.map do |version|
     Thread.new do
-      output, status = Open3.capture2e("docker", "compose", "run", "ruby-#{version.gsub(".", "-")}", "bundle", "exec", "rake", "test")
+      output, status = Open3.capture2e("docker", "compose", "run", "ruby-#{version.gsub(".", "-")}", "bundle", "exec", "rake", "test", "spec")
       if status.success? && output.include?(", 0 failures, 0 errors")
         puts "Ruby #{version}: ✅ passed"
       else
@@ -103,7 +103,7 @@ namespace :docker do
     end
 
     task "test_ruby_#{version}" => "build_ruby_#{version}" do
-      sh "docker", "compose", "run", "--rm", service, "bundle", "exec", "rake", "test"
+      sh "docker", "compose", "run", "--rm", service, "bundle", "exec", "rake", "test", "spec"
     end
 
     # Shorthand for Ruby 2.1+ (eg, `rake docker:build_ruby_2.1` -> `rake docker:build_ruby_2.1.10`)
