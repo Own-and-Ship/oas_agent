@@ -25,6 +25,9 @@ SUPPORTED_RUBY_VERSIONS = [
 desc "Build all ruby version Docker images"
 multitask "build:all" => SUPPORTED_RUBY_VERSIONS.map { |version| "docker:build_ruby_#{version}" }
 
+desc "Exec command across all Ruby versions in Docker"
+multitask "exec:all", [:command] => SUPPORTED_RUBY_VERSIONS.map { |version| "docker:exec_ruby_#{version}" }
+
 desc "Run tests across all Ruby versions in Docker"
 task "test:all" do
   require "thread"
@@ -86,6 +89,10 @@ namespace :docker do
 
     task "build_ruby_#{version}" => "docker-compose.yml" do
       sh "docker", "compose", "build", service
+    end
+
+    task "exec_ruby_#{version}", [:command] => "docker-compose.yml" do |t, args|
+      sh "docker", "compose", "run", "--rm", service, *Shellwords.shellsplit(args[:command])
     end
 
     task "shell_ruby_#{version}" => "build_ruby_#{version}" do
