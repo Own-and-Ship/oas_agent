@@ -78,7 +78,7 @@ RSpec.describe OasAgent::Agent::Reporter do
 
   context "when send_immediately is true" do
     before do
-      OasAgent::AgentContext.config.integrate(reporter: {send_immediately: true})
+      OasAgent::AgentContext.config.integrate(:reporter => {:send_immediately => true})
     end
 
     it "does not create background thread" do
@@ -89,7 +89,7 @@ RSpec.describe OasAgent::Agent::Reporter do
     describe "#close" do
       context "with send immediately enabled" do
         before do
-          OasAgent::AgentContext.config.integrate(reporter: {send_immediately: true})
+          OasAgent::AgentContext.config.integrate(:reporter => {:send_immediately => true})
         end
 
         it "happily closes down" do

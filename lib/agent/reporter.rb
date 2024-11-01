@@ -133,10 +133,10 @@ module OasAgent
 
         @connection.send_request(
           {
-            environment: @rails_env,
-            date: time.to_date.to_s,
-            hour: time.hour,
-            reports: @event_cache.serializable
+            :environment => @rails_env,
+            :date => time.to_date.to_s,
+            :hour => time.hour,
+            :reports => @event_cache.serializable
           }
         )
       end

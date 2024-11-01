@@ -7,7 +7,7 @@ require "agent/agent"
 RSpec.describe OasAgent::Agent::RubyReceiver do
   subject(:receiver) { described_class.new(reporter, "/some/root") }
 
-  let(:reporter) { instance_double("OasAgent::Agent::Reporter", push: nil) }
+  let(:reporter) { instance_double("OasAgent::Agent::Reporter", :push => nil) }
 
   describe "#push" do
     before { allow(reporter).to receive(:push) }
@@ -20,9 +20,9 @@ RSpec.describe OasAgent::Agent::RubyReceiver do
         receiver.push(message, callstack)
 
         expect(reporter).to have_received(:push).with(hash_including(
-          type: "ruby",
-          version: RUBY_VERSION,
-          message: message
+          :type => "ruby",
+          :version => RUBY_VERSION,
+          :message => message
         ))
       end
     end
@@ -40,9 +40,9 @@ RSpec.describe OasAgent::Agent::RubyReceiver do
         receiver.push(message, callstack)
 
         expect(reporter).to have_received(:push).with(hash_including(
-          type: "ruby",
-          version: RUBY_VERSION,
-          message: "something warning here"
+          :type => "ruby",
+          :version => RUBY_VERSION,
+          :message => "something warning here"
         ))
       end
     end

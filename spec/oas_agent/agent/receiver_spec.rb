@@ -8,7 +8,7 @@ RSpec.describe OasAgent::Agent::Receiver do
 
   subject(:receiver) { described_class.new(reporter, "/some/root") }
 
-  let(:reporter) { instance_double(OasAgent::Agent::Reporter, push: nil) }
+  let(:reporter) { instance_double(OasAgent::Agent::Reporter, :push => nil) }
 
   describe "#call" do
     subject(:call) { receiver.call(message, callstack) }
@@ -20,9 +20,9 @@ RSpec.describe OasAgent::Agent::Receiver do
       call
 
       expect(reporter).to have_received(:push).with(hash_including(
-        type: "rails",
-        message: message,
-        callstack: callstack
+        :type => "rails",
+        :message => message,
+        :callstack => callstack
       ))
     end
   end

@@ -15,9 +15,9 @@ RSpec.describe "OasAgent::Railtie" do
 
   let(:app) {
     OpenStruct.new(
-      config: OpenStruct.new(
-        active_support: OpenStruct.new(
-          deprecation: deprecation_setting
+      :config => OpenStruct.new(
+        :active_support => OpenStruct.new(
+          :deprecation => deprecation_setting
         )
       )
     )
@@ -66,7 +66,7 @@ RSpec.describe "OasAgent::Railtie" do
 
       subject[:block].call(app)
 
-      expect(OasAgent::Control.instance).to have_received(:init).with(config: app.config)
+      expect(OasAgent::Control.instance).to have_received(:init).with(:config => app.config)
     end
   end
 end

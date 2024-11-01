@@ -16,10 +16,10 @@ module OasAgent
 
       def call(message, callstack, *args)
         message = {
-          type: "rails",
-          version: @rails_version,
-          message: message.sub(/\ADEPRECATION WARNING: /, "").sub(/\(called from.+\)/, "").strip,
-          callstack: callstack.map(&:to_s)
+          :type => "rails",
+          :version => @rails_version,
+          :message => message.sub(/\ADEPRECATION WARNING: /, "").sub(/\(called from.+\)/, "").strip,
+          :callstack => callstack.map(&:to_s)
         }
 
         @reporter.push(message)

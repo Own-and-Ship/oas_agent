@@ -5,13 +5,13 @@ module OasAgent
   module Agent
     class EventCache
       DATA_INDEXES = {
-        event_hash: 0,
-        message: 1,
-        software: 2,
-        callstack: 3,
-        software_version: 4,
-        program_root: 5,
-        counts: 6
+        :event_hash => 0,
+        :message => 1,
+        :software => 2,
+        :callstack => 3,
+        :software_version => 4,
+        :program_root => 5,
+        :counts => 6
       }.freeze
 
       # @param message [String]
