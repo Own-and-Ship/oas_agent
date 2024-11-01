@@ -32,10 +32,11 @@ module OasAgent
         end
 
         def deep_symbolize(hash)
-          hash.each_with_object({}) do |(key, val), new_hash|
+          hash.inject({}) do |new_hash, (key, val)|
             new_key = key.respond_to?(:to_sym) ? key.to_sym : key
             new_val = val.is_a?(Hash) ? deep_symbolize(val) : val
             new_hash[new_key] = new_val
+            new_hash
           end
         end
 
