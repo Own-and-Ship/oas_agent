@@ -12,7 +12,7 @@ module OasAgent
         OasAgent::AgentContext.agent.receiver.call(message, callback, *args)
       end
 
-      app.config.active_support.deprecation = [*existing_setting, oas_agent_listener].compact
+      app.config.active_support.deprecation = [existing_setting, oas_agent_listener].flatten.compact
     end
 
     initializer "oas_agent.start_agent", :before => :load_config_initializers do |app|
