@@ -16,7 +16,7 @@ RSpec::Core::RakeTask.new(:spec)
 task :test => :spec
 
 SUPPORTED_RUBY_VERSIONS = [
-  "1.9.3", "2.0.0",
+  "1.8.7", "1.9.3", "2.0.0",
   "2.1.10", "2.2.10", "2.3.8", "2.4.10", "2.5.9", "2.6.10", "2.7.8",
   "3.0.7", "3.1.6", "3.2.5", "3.3.6", "3.4.0-preview2"
 ]
@@ -52,12 +52,17 @@ task "docker-compose.yml" => "Rakefile" do
   docker_compose_yml = {
     "services" => SUPPORTED_RUBY_VERSIONS.each_with_object({}) do |version, services|
       gemfile = case version
-      when "1.9.3", "2.0.0"
+      when "1.8.7", "1.9.3", "2.0.0"
         "gemfiles/Gemfile.ruby-#{version}.rb"
      else
         "gemfiles/Gemfile.ruby-#{version.split(".").first(2).join(".")}.rb"
       end
-      base_image = "ruby:#{version}"
+      base_image = case version
+      when "1.8.7"
+        "ghcr.io/rspec/docker-ci:1.8.7"
+      else
+        "ruby:#{version}"
+      end
       services["ruby-#{version.gsub(".", "-")}"] = {
         "build" => {
           "context" => ".",
@@ -104,7 +109,7 @@ namespace :docker do
     end
 
     # Shorthand for Ruby 2.1+ (eg, `rake docker:build_ruby_2.1` -> `rake docker:build_ruby_2.1.10`)
-    if version != "1.9.3" && version != "2.0.0"
+    if version != "1.8.7" && version != "1.9.3" && version != "2.0.0"
       short_version = version.split(".").first(2).join(".")
       task "build_ruby_#{short_version}" => "build_ruby_#{version}"
       task "shell_ruby_#{short_version}" => "shell_ruby_#{version}"
