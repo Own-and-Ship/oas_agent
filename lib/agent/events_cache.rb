@@ -5,6 +5,7 @@
 require "agent/event_cache"
 require "msgpack"
 require "base64"
+require "zlib"
 
 module OasAgent
   module Agent
