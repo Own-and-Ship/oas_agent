@@ -92,18 +92,22 @@ namespace :docker do
   SUPPORTED_RUBY_VERSIONS.each do |version|
     service = "ruby-#{version.gsub(".", "-")}"
 
+    desc "Build docker image for Ruby #{version}"
     task "build_ruby_#{version}" => "docker-compose.yml" do
       sh "docker", "compose", "build", service
     end
 
+    desc "Execute an arbitrary command in docker image for Ruby #{version}"
     task "exec_ruby_#{version}", [:command] => "docker-compose.yml" do |t, args|
       sh "docker", "compose", "run", "--rm", service, *Shellwords.shellsplit(args[:command])
     end
 
+    desc "Open a shell in the docker image for Ruby #{version}"
     task "shell_ruby_#{version}" => "build_ruby_#{version}" do
       sh "docker", "compose", "run", "--rm", service, "bash"
     end
 
+    desc "Run tests in the docker image for Ruby #{version}"
     task "test_ruby_#{version}" => "build_ruby_#{version}" do
       sh "docker", "compose", "run", "--rm", service, "bundle", "exec", "rake", "spec"
     end
@@ -111,8 +115,14 @@ namespace :docker do
     # Shorthand for Ruby 2.1+ (eg, `rake docker:build_ruby_2.1` -> `rake docker:build_ruby_2.1.10`)
     if version != "1.8.7" && version != "1.9.3" && version != "2.0.0"
       short_version = version.split(".").first(2).join(".")
+
+      desc "Build docker image for Ruby #{version}"
       task "build_ruby_#{short_version}" => "build_ruby_#{version}"
+
+      desc "Open a shell in the docker image for Ruby #{version}"
       task "shell_ruby_#{short_version}" => "shell_ruby_#{version}"
+
+      desc "Run tests in the docker image for Ruby #{version}"
       task "test_ruby_#{short_version}" => "test_ruby_#{version}"
     end
   end
