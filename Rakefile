@@ -57,12 +57,13 @@ task "docker-compose.yml" => "Rakefile" do
      else
         "gemfiles/Gemfile.ruby-#{version.split(".").first(2).join(".")}.rb"
       end
+      base_image = "ruby:#{version}"
       services["ruby-#{version.gsub(".", "-")}"] = {
         "build" => {
           "context" => ".",
           "dockerfile" => "Dockerfile",
           "args" => {
-            "RUBY_VERSION" => version,
+            "RUBY_BASE_IMAGE" => base_image,
             "BUNDLE_GEMFILE" => gemfile,
           }
         },
