@@ -15,6 +15,10 @@ module OasAgent
       # Used for older rubies before SizedQueue#close was introduced
       QUEUE_CLOSED = Object.new
 
+      if RUBY_VERSION < "1.9"
+        SINGLETON_MUTEX = Mutex.new
+      end
+
       # Create a new agent and start the reporter thread.
       def initialize
         @rails_env = Rails.env
@@ -52,7 +56,7 @@ module OasAgent
       # Closes down reporter
       # Attempts to shutdown gracefully, but will force close if it takes too long
       def close
-        self.class.instance_variable_get(:@singleton__mutex__).synchronize do
+        singleton_mutex.synchronize do
           if @report_queue.respond_to?(:close)
             @report_queue.close
           else
@@ -69,7 +73,7 @@ module OasAgent
 
       # Expects to be called after a process has forked to restart now-dead thread
       def restart
-        self.class.instance_variable_get(:@singleton__mutex__).synchronize do
+        singleton_mutex.synchronize do
           unless OasAgent::AgentContext.config[:reporter][:send_immediately]
             @reporter_thread.kill if @reporter_thread.alive?
             @reporter_thread = create_reporter_thread
@@ -139,6 +143,12 @@ module OasAgent
             :reports => @event_cache.serializable
           }
         )
+      end
+
+      private
+
+      def singleton_mutex
+        self.class.instance_variable_get(:@singleton__mutex__) || SINGLETON_MUTEX
       end
     end
   end
