@@ -1,5 +1,7 @@
 AllCops:
+  TargetRubyVersion: 2.0
   DisabledByDefault: true
+  SuggestExtensions: false
 
 Bundler:
   Enabled: true

@@ -5,6 +5,7 @@
 
 require "bundler/gem_tasks"
 require "rake/testtask"
+require "rspec/core/rake_task"
 require "json"
 require "yaml"
 
@@ -16,6 +17,8 @@ Rake::TestTask.new(:test) do |t|
   t.test_files = FileList["test/**/*_test.rb"]
 end
 
+RSpec::Core::RakeTask.new(:spec)
+
 SUPPORTED_RUBY_VERSIONS = [
   "1.9.3", "2.0.0",
   "2.1.10", "2.2.10", "2.3.8", "2.4.10", "2.5.9", "2.6.10", "2.7.8",
@@ -25,6 +28,9 @@ SUPPORTED_RUBY_VERSIONS = [
 desc "Build all ruby version Docker images"
 multitask "build:all" => SUPPORTED_RUBY_VERSIONS.map { |version| "docker:build_ruby_#{version}" }
 
+desc "Exec command across all Ruby versions in Docker"
+multitask "exec:all", [:command] => SUPPORTED_RUBY_VERSIONS.map { |version| "docker:exec_ruby_#{version}" }
+
 desc "Run tests across all Ruby versions in Docker"
 task "test:all" do
   require "thread"
@@ -33,7 +39,7 @@ task "test:all" do
   # Run tests in parallel
   threads = SUPPORTED_RUBY_VERSIONS.map do |version|
     Thread.new do
-      output, status = Open3.capture2e("docker", "compose", "run", "ruby-#{version.gsub(".", "-")}", "bundle", "exec", "rake", "test")
+      output, status = Open3.capture2e("docker", "compose", "run", "ruby-#{version.gsub(".", "-")}", "bundle", "exec", "rake", "test", "spec")
       if status.success? && output.include?(", 0 failures, 0 errors")
         puts "Ruby #{version}: ✅ passed"
       else
@@ -88,12 +94,16 @@ namespace :docker do
       sh "docker", "compose", "build", service
     end
 
+    task "exec_ruby_#{version}", [:command] => "docker-compose.yml" do |t, args|
+      sh "docker", "compose", "run", "--rm", service, *Shellwords.shellsplit(args[:command])
+    end
+
     task "shell_ruby_#{version}" => "build_ruby_#{version}" do
       sh "docker", "compose", "run", "--rm", service, "bash"
     end
 
     task "test_ruby_#{version}" => "build_ruby_#{version}" do
-      sh "docker", "compose", "run", "--rm", service, "bundle", "exec", "rake", "test"
+      sh "docker", "compose", "run", "--rm", service, "bundle", "exec", "rake", "test", "spec"
     end
 
     # Shorthand for Ruby 2.1+ (eg, `rake docker:build_ruby_2.1` -> `rake docker:build_ruby_2.1.10`)

@@ -38,6 +38,11 @@ module OasAgent
             new_hash[new_key] = new_val
           end
         end
+
+        # Internal: Clear the configuration for tests
+        def clear
+          @config.clear
+        end
       end
     end
   end
