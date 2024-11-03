@@ -1,0 +1,46 @@
+PATH
+  remote: ..
+  specs:
+    oas_agent (0.0.1)
+      base64
+      logger
+      msgpack
+      ostruct
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    base64 (0.2.0)
+    diff-lcs (1.5.1)
+    logger (1.6.1)
+    minitest (5.25.1)
+    msgpack (1.7.3)
+    ostruct (0.6.0)
+    rake (13.2.1)
+    rspec (3.13.0)
+      rspec-core (~> 3.13.0)
+      rspec-expectations (~> 3.13.0)
+      rspec-mocks (~> 3.13.0)
+    rspec-core (3.13.2)
+      rspec-support (~> 3.13.0)
+    rspec-expectations (3.13.3)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-mocks (3.13.2)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-support (3.13.1)
+
+PLATFORMS
+  aarch64-linux
+  ruby
+
+DEPENDENCIES
+  bundler
+  minitest (~> 5.0)
+  oas_agent!
+  rake
+  rspec (~> 3.0)
+
+BUNDLED WITH
+   2.5.22
