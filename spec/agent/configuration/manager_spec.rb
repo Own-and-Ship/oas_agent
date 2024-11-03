@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 
 require "support/mock_rails"
-require "oas_agent"
 
 RSpec.describe OasAgent::Agent::Configuration::Manager do
   before do

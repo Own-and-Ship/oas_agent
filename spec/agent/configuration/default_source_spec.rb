@@ -1,8 +1,6 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-require "agent/configuration/default_source"
-
 RSpec.describe OasAgent::Agent::Configuration::DefaultSource do
   describe "#to_h" do
     subject { described_class.new.to_h }
