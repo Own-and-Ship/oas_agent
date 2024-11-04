@@ -3,6 +3,7 @@
 
 require "net/https"
 require "json"
+require "agent/version"
 
 module OasAgent
   module Agent
@@ -17,6 +18,8 @@ module OasAgent
         (Net::OpenTimeout if defined?(Net::OpenTimeout)),
       ].compact.freeze
 
+      USER_AGENT = "oas-agent/#{OasAgent::VERSION} (ruby)".freeze
+
       def initialize
         @default_headers = {
           "Content-Encoding" => OasAgent::AgentContext.config[:api][:reports_encoding],
@@ -28,7 +31,7 @@ module OasAgent
 
       def send_request(data)
         request = Net::HTTP::Post.new(config[:api][:reports_request_path], @default_headers)
-        request["user-agent"] = config[:api][:user_agent]
+        request["user-agent"] = USER_AGENT
 
         request.content_type = config[:api][:reports_content_type]
 
