@@ -82,8 +82,8 @@ module OasAgent
 
         @conn.open_timeout       = config[:api][:open_timeout]
         @conn.read_timeout       = config[:api][:read_timeout]
-        @conn.write_timeout      = config[:api][:write_timeout]
-        @conn.keep_alive_timeout = config[:api][:keepalive_timeout] if @conn.respond_to?(:keep_alive_timeout)
+        @conn.write_timeout      = config[:api][:write_timeout] if @conn.respond_to?(:write_timeout=)
+        @conn.keep_alive_timeout = config[:api][:keepalive_timeout] if @conn.respond_to?(:keep_alive_timeout=)
         @conn.close_on_empty_response = true
         @conn.start
 
