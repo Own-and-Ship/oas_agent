@@ -39,13 +39,8 @@ RSpec.describe OasAgent::Agent::Reporter do
     end
 
     context "with a reporter thread slow to stop" do
-      let(:slow_thread) { Thread.new { sleep 10 } }
-
-      after { slow_thread.kill if slow_thread.alive? }
-
-      it "kills the thread after a timeout" do
-        # Setup logger so we can check the warning appears
-        logger = Class.new do
+      let(:logger) do
+        Class.new do
           def messages
             @messages ||= []
           end
@@ -53,9 +48,20 @@ RSpec.describe OasAgent::Agent::Reporter do
           def warn(message)
             messages << [:warn, message]
           end
-        end
+        end.new
+      end
+      let(:slow_thread) { Thread.new { sleep 10 } }
 
-        OasAgent::AgentContext.logger = logger.new
+      around do |example|
+        existing_logger = OasAgent::AgentContext.logger
+        OasAgent::AgentContext.logger = logger
+        example.run
+        OasAgent::AgentContext.logger = existing_logger if existing_logger
+      end
+
+      after { slow_thread.kill if slow_thread.alive? }
+
+      it "kills the thread after a timeout" do
 
         # Swap the reporter thread for a "slow" one
         # Stop us leaking the original thread in test
