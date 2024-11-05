@@ -21,6 +21,7 @@ RSpec.describe OasAgent::Agent::Connection do
     FakeWeb.register_uri(:post, "https://ownandship.test/api/report/deprecation",
       headers: {
         "X-Api-Token" => "test_key",
+        "User-Agent" => "oas-agent/#{OasAgent::VERSION} (ruby)",
       }
     )
 
