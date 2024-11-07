@@ -3,7 +3,7 @@
 
 require "net/https"
 require "json"
-require "agent/version"
+require "oas_agent/version"
 
 module OasAgent
   module Agent
