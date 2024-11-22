@@ -1,13 +1,10 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-require "support/mock_rails"
+require "support/rails_helper"
 
 RSpec.describe OasAgent::Agent::Configuration::Manager do
-  before do
-    MockRails.reset
-    stub_const("Rails", MockRails)
-  end
+  include RailsHelper
 
   describe "#integrate" do
     it "handles simple merge with symbolized keys" do
