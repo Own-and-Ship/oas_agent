@@ -7,6 +7,7 @@ require "pathname"
 module RailsHelper
   module MockRails
     module VERSION
+      STRING = "7.0.0"
       MAJOR = 7
     end
 
