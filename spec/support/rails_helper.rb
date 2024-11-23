@@ -35,6 +35,10 @@ module RailsHelper
       @env = value
     end
 
+    def logger
+      @logger ||= Logger.new("/dev/null")
+    end
+
     def root
       Pathname.new(__FILE__).dirname.join("..", "tmp").expand_path
     end
