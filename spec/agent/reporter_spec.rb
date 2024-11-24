@@ -1,13 +1,12 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-require "support/mock_rails"
+require "support/rails_helper"
 
 RSpec.describe OasAgent::Agent::Reporter do
-  before do
-    stub_const("Rails", MockRails)
-    MockRails.reset
+  include RailsHelper
 
+  before do
     # Ensure we have default config in place
     OasAgent::AgentContext.config.integrate(OasAgent::Agent::Configuration::DefaultSource.new.to_h)
 

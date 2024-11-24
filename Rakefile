@@ -4,20 +4,16 @@
 # This file must work on Ruby 1.9.3, sorry.
 
 require "bundler/gem_tasks"
-require "rake/testtask"
 require "rspec/core/rake_task"
 require "json"
 require "yaml"
 
-task :default => :test
-
-Rake::TestTask.new(:test) do |t|
-  t.libs << "test"
-  t.libs << "lib"
-  t.test_files = FileList["test/**/*_test.rb"]
-end
+task :default => :spec
 
 RSpec::Core::RakeTask.new(:spec)
+
+# Backwards compatibility, we used to have a `test` task
+task :test => :spec
 
 SUPPORTED_RUBY_VERSIONS = [
   "1.9.3", "2.0.0",
@@ -39,7 +35,7 @@ task "test:all" do
   # Run tests in parallel
   threads = SUPPORTED_RUBY_VERSIONS.map do |version|
     Thread.new do
-      output, status = Open3.capture2e("docker", "compose", "run", "ruby-#{version.gsub(".", "-")}", "bundle", "exec", "rake", "test", "spec")
+      output, status = Open3.capture2e("docker", "compose", "run", "ruby-#{version.gsub(".", "-")}", "bundle", "exec", "rake", "spec")
       if status.success? && output.include?(", 0 failures, 0 errors")
         puts "Ruby #{version}: ✅ passed"
       else
@@ -103,7 +99,7 @@ namespace :docker do
     end
 
     task "test_ruby_#{version}" => "build_ruby_#{version}" do
-      sh "docker", "compose", "run", "--rm", service, "bundle", "exec", "rake", "test", "spec"
+      sh "docker", "compose", "run", "--rm", service, "bundle", "exec", "rake", "spec"
     end
 
     # Shorthand for Ruby 2.1+ (eg, `rake docker:build_ruby_2.1` -> `rake docker:build_ruby_2.1.10`)
