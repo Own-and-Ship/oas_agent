@@ -9,10 +9,14 @@ RSpec.describe OasAgent::Agent::Hostname do
 
   describe ".get" do
     subject { described_class.get }
+
     it "returns the system hostname as utf8" do
       expect(subject).to be_a(String)
-      expect(subject.encoding).to eq(Encoding::UTF_8)
       expect(subject).to eq(Socket.gethostname)
+
+      if String.method_defined?(:encoding)
+        expect(subject.encoding).to eq(Encoding::UTF_8)
+      end
     end
   end
 

@@ -18,8 +18,15 @@ module OasAgent
         ::
       ].freeze
 
-      def get
-        Socket.gethostname.force_encoding(Encoding::UTF_8)
+      if String.method_defined?(:force_encoding)
+        def get
+          Socket.gethostname.force_encoding(Encoding::UTF_8)
+        end
+      else
+        # Ruby < 1.9.0
+        def get
+          Socket.gethostname
+        end
       end
 
       def dyno_name
