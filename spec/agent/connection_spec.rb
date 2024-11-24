@@ -6,7 +6,7 @@ RSpec.describe OasAgent::Agent::Connection do
     OasAgent::AgentContext.config.integrate(OasAgent::Agent::Configuration::DefaultSource.new.to_h)
     OasAgent::AgentContext.config.integrate(
       :agent_key => "test_key",
-      :api => { :host => "ownandship.test" },
+      :api => { :host => "ownandship.test" }
     )
   end
 
