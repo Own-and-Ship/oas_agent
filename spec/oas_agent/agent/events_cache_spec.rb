@@ -22,8 +22,8 @@ RSpec.describe OasAgent::Agent::EventsCache do
       end
       event_cache.add_event("Some deprecation message", "Ruby", "9001", ["a", "b"])
 
-      expect(event_cache_data.first[OasAgent::Agent::EventCache::DATA_INDEXES[:counts]]).to eq(2)
-      expect(event_cache_data.last[OasAgent::Agent::EventCache::DATA_INDEXES[:counts]]).to eq(1)
+      count_data = event_cache_data.map { |event| event[OasAgent::Agent::EventCache::DATA_INDEXES[:counts]] }
+      expect(count_data).to match_array([2, 1])
     end
 
     it "maintains separate counts of distinct events" do
