@@ -147,8 +147,14 @@ module OasAgent
 
       private
 
-      def singleton_mutex
-        self.class.instance_variable_get(:@singleton__mutex__) || SINGLETON_MUTEX
+      if RUBY_VERSION < "1.9"
+        def singleton_mutex
+          SINGLETON_MUTEX
+        end
+      else
+        def singleton_mutex
+          self.class.instance_variable_get(:@singleton__mutex__)
+        end
       end
     end
   end
