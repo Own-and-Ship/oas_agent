@@ -15,7 +15,12 @@ RSpec.describe OasAgent::Agent::Logger do
   %w[debug info warn error fatal].each do |level|
     describe "##{level}" do
       it "logs message" do
-        logger.public_send(level, "test message")
+        if logger.respond_to?(:public_send)
+          logger.public_send(level, "test message")
+        else
+          # Ruby < 1.9
+          logger.__send__(level, "test message")
+        end
         expect(output.string).to include("test message")
         expect(output.string).to include(level.upcase)
       end

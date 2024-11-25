@@ -53,8 +53,8 @@ module OasAgent
 
         def process_yaml(file, env, path)
           if file
-            confighash = if Psych::VERSION > "4.0"
-              YAML.safe_load(file, permitted_classes: [Symbol], aliases: true)
+            confighash = if defined?(Psych) && Psych::VERSION > "4.0"
+              YAML.safe_load(file, :permitted_classes => [Symbol], :aliases => true)
             else
               YAML.load(file)
             end

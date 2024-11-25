@@ -5,8 +5,8 @@ RSpec.describe OasAgent::Agent::Connection do
   before do
     OasAgent::AgentContext.config.integrate(OasAgent::Agent::Configuration::DefaultSource.new.to_h)
     OasAgent::AgentContext.config.integrate(
-      agent_key: "test_key",
-      api: { host: "ownandship.test" },
+      :agent_key => "test_key",
+      :api => { :host => "ownandship.test" }
     )
   end
 
@@ -19,7 +19,7 @@ RSpec.describe OasAgent::Agent::Connection do
     data = { "key" => "value" }
 
     FakeWeb.register_uri(:post, "https://ownandship.test/api/report/deprecation",
-      headers: {
+      :headers => {
         "X-Api-Token" => "test_key",
         "User-Agent" => "oas-agent/#{OasAgent::VERSION} (ruby)",
       }

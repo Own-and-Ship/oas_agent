@@ -13,7 +13,7 @@ module RailsHelper
 
     class Railtie
       def self.initializer(name, options = {}, &block)
-        MockRails.initializers[name] = {options: options, block: block}
+        MockRails.initializers[name] = {:options => options, :block => block}
       end
     end
 

@@ -16,10 +16,10 @@ module OasAgent
 
       def push(message, callstack)
         message = {
-          type: "ruby",
-          version: RUBY_VERSION,
-          message: strip_path_prefixed_message(message, callstack).strip,
-          callstack: callstack.map(&:to_s)
+          :type => "ruby",
+          :version => RUBY_VERSION,
+          :message => strip_path_prefixed_message(message, callstack).strip,
+          :callstack => callstack.map(&:to_s)
         }
 
         @reporter.push(message)
