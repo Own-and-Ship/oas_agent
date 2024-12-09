@@ -10,4 +10,4 @@ module ::Warning
       OasAgent::AgentContext.agent.ruby_receiver.push(warning.strip, caller) if warning.include?("deprecated")
     end
   end
-end
+end if defined?(::Warning)
