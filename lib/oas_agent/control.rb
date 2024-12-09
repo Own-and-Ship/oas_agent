@@ -3,7 +3,7 @@
 
 require "agent/agent"
 require "agent/logger"
-require "agent_context"
+require "oas_agent/agent_context"
 
 module OasAgent
   class Control
