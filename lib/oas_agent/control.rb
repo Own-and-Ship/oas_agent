@@ -71,7 +71,7 @@ module OasAgent
     end
 
     def insert_ruby_deprecation_behaviour
-      require "control/ruby_reporting"
+      require "oas_agent/core_ext/warning"
     end
 
     def yaml_config_file_path
