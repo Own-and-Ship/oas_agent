@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require "agent/version"
-require "control"
+require "oas_agent/control"
 
 if defined?(Rails::VERSION)
   require "oas_agent/railtie"
