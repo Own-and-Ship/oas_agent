@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require "oas_agent/agent"
-require "agent/logger"
+require "oas_agent/agent/logger"
 require "oas_agent/agent_context"
 
 module OasAgent
