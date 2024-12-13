@@ -14,7 +14,7 @@ module OasAgent
     # If we need to deploy to something other than Rails we will determine the
     # framework here
     def self.new_instance
-      require "control/frameworks/rails"
+      require "oas_agent/control/frameworks/rails"
       Frameworks::Rails.new
     end
 
