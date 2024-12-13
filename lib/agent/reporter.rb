@@ -3,7 +3,7 @@
 
 require "singleton"
 require "oas_agent/agent/connection"
-require "agent/events_cache"
+require "oas_agent/agent/events_cache"
 require "digest"
 require "timeout"
 
