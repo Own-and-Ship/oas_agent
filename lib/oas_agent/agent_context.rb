@@ -5,7 +5,7 @@ module OasAgent
   module AgentContext
     extend self
 
-    require "agent/configuration"
+    require "oas_agent/agent/configuration"
 
     def config
       @config ||= Agent::Configuration::Manager.new

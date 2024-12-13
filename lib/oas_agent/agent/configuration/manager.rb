@@ -1,9 +1,9 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-require "agent/configuration/default_source"
-require "agent/configuration/yaml_source"
-require "agent/configuration/environment_source"
+require "oas_agent/agent/configuration/default_source"
+require "oas_agent/agent/configuration/yaml_source"
+require "oas_agent/agent/configuration/environment_source"
 
 module OasAgent
   module Agent

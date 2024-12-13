@@ -1,7 +1,7 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-# require "agent/configuration/manager"
+# require "oas_agent/agent/configuration/manager"
 require "agent/event_cache"
 require "msgpack"
 require "base64"
