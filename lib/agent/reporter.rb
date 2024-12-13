@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require "singleton"
-require "agent/connection"
+require "oas_agent/agent/connection"
 require "agent/events_cache"
 require "digest"
 require "timeout"
