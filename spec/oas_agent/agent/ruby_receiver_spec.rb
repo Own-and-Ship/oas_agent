@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require "agent/agent"
+require "oas_agent/agent"
 
 RSpec.describe OasAgent::Agent::RubyReceiver do
   subject(:receiver) { described_class.new(reporter, "/some/root") }

@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require "agent/agent"
+require "oas_agent/agent"
 
 RSpec.describe OasAgent::Agent::EventsCache do
   let(:event_cache) { described_class.new("/some/root") }
