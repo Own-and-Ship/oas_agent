@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require "singleton"
-require "agent/reporter"
+require "oas_agent/agent/reporter"
 require "oas_agent/agent/receiver"
 require "oas_agent/agent/ruby_receiver"
 
