@@ -3,7 +3,7 @@
 
 require "singleton"
 require "agent/reporter"
-require "agent/receiver"
+require "oas_agent/agent/receiver"
 require "agent/ruby_receiver"
 
 module OasAgent
