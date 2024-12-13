@@ -1,8 +1,8 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-require "oas_agent/agent/hostname"
 require "logger"
+require "oas_agent/agent/hostname"
 
 module OasAgent
   module Agent

@@ -1,14 +1,13 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-require "singleton"
-require "oas_agent/agent/reporter"
 require "oas_agent/agent/receiver"
+require "oas_agent/agent/reporter"
 require "oas_agent/agent/ruby_receiver"
+require "singleton"
 
 module OasAgent
   module Agent
-
     extend self
 
     def config

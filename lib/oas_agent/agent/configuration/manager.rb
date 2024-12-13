@@ -2,8 +2,8 @@
 # frozen_string_literal: true
 
 require "oas_agent/agent/configuration/default_source"
-require "oas_agent/agent/configuration/yaml_source"
 require "oas_agent/agent/configuration/environment_source"
+require "oas_agent/agent/configuration/yaml_source"
 
 module OasAgent
   module Agent

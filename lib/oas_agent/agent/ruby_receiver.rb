@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 
 require "oas_agent/agent/configuration/manager"
-require "singleton"
 
 module OasAgent
   module Agent
