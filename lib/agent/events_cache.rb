@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 # require "oas_agent/agent/configuration/manager"
-require "agent/event_cache"
+require "oas_agent/agent/event_cache"
 require "msgpack"
 require "base64"
 require "zlib"
