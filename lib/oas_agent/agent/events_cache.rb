@@ -1,10 +1,9 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-# require "agent/configuration/manager"
-require "agent/event_cache"
-require "msgpack"
 require "base64"
+require "msgpack"
+require "oas_agent/agent/event_cache"
 require "zlib"
 
 module OasAgent

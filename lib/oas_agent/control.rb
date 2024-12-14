@@ -1,9 +1,9 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-require "agent/agent"
-require "agent/logger"
-require "agent_context"
+require "oas_agent/agent"
+require "oas_agent/agent/logger"
+require "oas_agent/agent_context"
 
 module OasAgent
   class Control
@@ -14,7 +14,7 @@ module OasAgent
     # If we need to deploy to something other than Rails we will determine the
     # framework here
     def self.new_instance
-      require "control/frameworks/rails"
+      require "oas_agent/control/frameworks/rails"
       Frameworks::Rails.new
     end
 
@@ -71,7 +71,7 @@ module OasAgent
     end
 
     def insert_ruby_deprecation_behaviour
-      require "control/ruby_reporting"
+      require "oas_agent/core_ext/warning"
     end
 
     def yaml_config_file_path

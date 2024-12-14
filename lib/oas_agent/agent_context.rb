@@ -1,11 +1,11 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
+require "oas_agent/agent/configuration"
+
 module OasAgent
   module AgentContext
     extend self
-
-    require "agent/configuration"
 
     def config
       @config ||= Agent::Configuration::Manager.new

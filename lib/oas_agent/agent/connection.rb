@@ -1,9 +1,9 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-require "net/https"
 require "json"
-require "agent/version"
+require "net/https"
+require "oas_agent/version"
 
 module OasAgent
   module Agent

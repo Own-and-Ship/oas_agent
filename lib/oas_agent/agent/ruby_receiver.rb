@@ -1,8 +1,7 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-require "agent/configuration/manager"
-require "singleton"
+require "oas_agent/agent/configuration/manager"
 
 module OasAgent
   module Agent
