@@ -1,10 +1,10 @@
-name: Ruby tests
+name: "Ruby tests"
 
 on:
   push:
     # Sequence of patterns matched against refs/heads
     branches:
-      - master
+      - "master"
   pull_request:
 
 jobs:
@@ -12,7 +12,7 @@ jobs:
   test_docker:
     runs-on: "ubuntu-latest"
     env:
-      RAILS_ENV: test
+      RAILS_ENV: "test"
       BUNDLE_GEMFILE: "${{ github.workspace }}/gemfiles/Gemfile.ruby-${{ matrix.ruby }}.rb"
     container: "ghcr.io/rspec/docker-ci:${{ matrix.ruby }}"
     strategy:
@@ -31,7 +31,7 @@ jobs:
     # Ruby 2.2 doesn't install on Ubuntu 22.04, use 20.04 for now
     runs-on: "${{ matrix.ruby == '2.2' && 'ubuntu-20.04' || 'ubuntu-latest' }}"
     env:
-      RAILS_ENV: test
+      RAILS_ENV: "test"
       BUNDLE_GEMFILE: "${{ github.workspace }}/gemfiles/Gemfile.ruby-${{ matrix.ruby }}.rb"
     strategy:
       fail-fast: false

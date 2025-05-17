@@ -1,25 +1,25 @@
-name: Lint Ruby
+name: "Lint Ruby"
 
 on:
   push:
     # Sequence of patterns matched against refs/heads
     branches:
-      - master
+      - "master"
   pull_request:
 
 jobs:
   rubocop:
-    name: RuboCop
-    runs-on: ubuntu-20.04
+    name: "RuboCop"
+    runs-on: "ubuntu-20.04"
     steps:
-      - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
+      - uses: "actions/checkout@v4"
+      - uses: "ruby/setup-ruby@v1"
         with:
           bundler-cache: true
-      - uses: reviewdog/action-rubocop@v2
+      - uses: "reviewdog/action-rubocop@v2"
         with:
           fail_on_error: true
-          reporter: github-pr-review
-          rubocop_version: gemfile
+          reporter: "github-pr-review"
+          rubocop_version: "gemfile"
           skip_install: true
           use_bundler: true
