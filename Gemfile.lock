@@ -2,17 +2,23 @@ PATH
   remote: .
   specs:
     oas_agent (0.0.1)
+      base64
+      logger
       msgpack
+      ostruct
 
 GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.2)
+    base64 (0.2.0)
     diff-lcs (1.5.1)
     fakeweb (1.3.0)
     json (2.7.2)
     language_server-protocol (3.17.0.3)
+    logger (1.7.0)
     msgpack (1.7.2)
+    ostruct (0.6.1)
     parallel (1.26.3)
     parser (3.3.4.2)
       ast (~> 2.4.1)
