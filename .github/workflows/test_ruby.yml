@@ -15,7 +15,7 @@ jobs:
     env:
       RAILS_ENV: "test"
       BUNDLE_GEMFILE: "${{ github.workspace }}/gemfiles/Gemfile.ruby-${{ matrix.ruby.version }}.rb"
-    container: "${{ matrix.ruby.image }}:${{ matrix.ruby.version }}"
+    container: "${{ matrix.ruby.image || 'ruby' }}:${{ matrix.ruby.version }}"
     name: "RSpec on Ruby v${{ matrix.ruby.version }}"
     strategy:
       fail-fast: false
@@ -28,9 +28,7 @@ jobs:
           - version: "2.0.0"
             image: "ghcr.io/rspec/docker-ci"
           - version: "2.1"
-            image: "ruby"
           - version: "2.2"
-            image: "ruby"
 
     steps:
       - name: "Clone project"

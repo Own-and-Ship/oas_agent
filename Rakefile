@@ -58,8 +58,8 @@ task "docker-compose.yml" => "Rakefile" do
         "gemfiles/Gemfile.ruby-#{version.split(".").first(2).join(".")}.rb"
       end
       base_image = case version
-      when "1.8.7"
-        "ghcr.io/rspec/docker-ci:1.8.7"
+      when "1.8.7", "1.9.3", "2.0.0"
+        "ghcr.io/rspec/docker-ci:#{version}"
       else
         "ruby:#{version}"
       end
