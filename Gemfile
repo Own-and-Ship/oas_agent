@@ -1,5 +1,7 @@
 source "https://rubygems.org"
 
+ruby file: ".ruby-version"
+
 # Specify your gem's dependencies in oas_ruby_agent.gemspec
 gemspec
 
