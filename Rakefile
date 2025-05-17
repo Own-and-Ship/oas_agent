@@ -1,7 +1,7 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-# This file must work on Ruby 1.9.3, sorry.
+# This file must work on Ruby 1.8.7, sorry.
 
 require "bundler/gem_tasks"
 require "rspec/core/rake_task"
@@ -15,10 +15,11 @@ RSpec::Core::RakeTask.new(:spec)
 # Backwards compatibility, we used to have a `test` task
 task :test => :spec
 
+# https://endoflife.date/ruby useful list of versions
 SUPPORTED_RUBY_VERSIONS = [
   "1.8.7", "1.9.3", "2.0.0",
   "2.1.10", "2.2.10", "2.3.8", "2.4.10", "2.5.9", "2.6.10", "2.7.8",
-  "3.0.7", "3.1.6", "3.2.5", "3.3.6", "3.4.1"
+  "3.0.7", "3.1.7", "3.2.8", "3.3.8", "3.4.4"
 ]
 
 desc "Build all ruby version Docker images"
