@@ -16,7 +16,7 @@ services:
       context: "."
       dockerfile: Dockerfile
       args:
-        RUBY_BASE_IMAGE: ruby:1.9.3
+        RUBY_BASE_IMAGE: ghcr.io/rspec/docker-ci:1.9.3
         BUNDLE_GEMFILE: gemfiles/Gemfile.ruby-1.9.3.rb
     volumes:
     - ".:/app"
@@ -26,7 +26,7 @@ services:
       context: "."
       dockerfile: Dockerfile
       args:
-        RUBY_BASE_IMAGE: ruby:2.0.0
+        RUBY_BASE_IMAGE: ghcr.io/rspec/docker-ci:2.0.0
         BUNDLE_GEMFILE: gemfiles/Gemfile.ruby-2.0.0.rb
     volumes:
     - ".:/app"
