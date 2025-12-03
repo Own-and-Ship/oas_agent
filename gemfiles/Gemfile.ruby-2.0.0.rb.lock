@@ -1,5 +1,5 @@
 PATH
-  remote: ../
+  remote: ..
   specs:
     oas_agent (0.0.1)
       msgpack
@@ -37,4 +37,4 @@ DEPENDENCIES
   rspec (~> 3.0)
 
 BUNDLED WITH
-   1.11.2
+   1.17.3

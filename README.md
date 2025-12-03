@@ -54,9 +54,9 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ### Ruby versions
 
-We target Ruby 1.9.3 or newer, and run CI against every minor release of ruby since then to ensure compatibility.
+We target Ruby 1.8.7 or newer, and run CI against every minor release of ruby since then to ensure compatibility.
 
-The development environment is pinned in `.ruby-version` so we can run development tooling on a more modern version of Ruby, but the library code and dependencies must be compatible with 1.9.3.
+The development environment is pinned in `.ruby-version` so we can run development tooling on a more modern version of Ruby, but the gem must work on all supported versions targeted. We develop on the oldest stable release of ruby still receiving security updates.
 
 The test suite is powered by [RSpec](https://github.com/rspec), you can run the entire suite with `bundle exec rake spec` or run a single test file with `bundle exec rspec spec/oas_agent/version_spec.rb`.
 
